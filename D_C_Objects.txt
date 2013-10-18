@@ -1,0 +1,52 @@
+|*|*|*|*|*|
+|*|*|*|*|*|
+|*|*|*|*|*|
+|*|*|*|*|*|
+|*|*|*|*|*|
+
+class player
+{
+	private:
+		int attack;
+		int defense;
+		int health;
+		int position;
+	public:
+		int defense() const;
+		int attack() const;
+		int health() const;
+		int position();
+		void change_health(int);
+		void change_attack(int);
+		void change_defense(int);
+		int change_posititon(char);
+		void display_stats();
+}
+
+class gameboard()
+{
+	private:
+		string board_layout;
+		vector<string> gameboard;
+	public:
+		void create_gameboard();
+};
+
+class monster
+{
+	private:
+		int attack;
+		int defense;
+		int health;
+	public:
+		int defense() const;
+		int attack() const;
+		int health() const;
+		void change_health(int);
+};
+
+void game_start()
+{
+	cout << "...You find yourself surrounded by suffocating blackness, your breath quickly crystallizing in the icy air..." << endl
+	     << "...Your memory is faint but you notice a glimmer of light in the distance and taking your sword, you set off..." << endl;
+}
