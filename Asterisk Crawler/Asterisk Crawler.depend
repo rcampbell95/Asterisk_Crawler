@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1382417228 source:c:\users\robert\documents\github\dungeon_crawler\asterisk crawler\main.cpp
+	<iostream>
+	<vector>
+	<string>
+	<cstdlib>
+	<time.h>
+

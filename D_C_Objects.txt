@@ -50,3 +50,19 @@ void game_start()
 	cout << "...You find yourself surrounded by suffocating blackness, your breath quickly crystallizing in the icy air..." << endl
 	     << "...Your memory is faint but you notice a glimmer of light in the distance and taking your sword, you set off..." << endl;
 }
+
+void gameboard::create_gameboard()
+{
+	
+}
+
+char create_board_pattern(int board_size, string board_pattern)
+{
+	string new_pattern = "";
+	for(int count = 0; count < board_size; count++)
+	{
+		new_pattern += board_pattern;
+	}
+	new_pattern += '|';
+}
+
