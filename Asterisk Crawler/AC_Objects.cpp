@@ -14,18 +14,19 @@ using namespace std;
 class Gameboard
 {
 private:
-    int percent_treasures;
-    int percent_spaces;
+    int num_treasures;
+    int num_spaces;
     int num_monsters;
     string board_layout;
-    vector<string> gameboard;
+    vector<string> gameboard(5);
 public:
-    Gameboard(int, int, string);
+    Gameboard(int, int, int, string);
     Gameboard();
     int p_spaces() const;
     int n_monsters() const;
     int p_treasures() const;
     string get_layout() const;
+    string get_board() const;
     void set_layout(string);
     void set_p_treasures(int);
     void set_p_spaces(int);
@@ -55,18 +56,21 @@ void calc_board_perc(Gameboard&);
 
 Gameboard::Gameboard()
 {
-    percent_treasures = 0;
-    percent_spaces = 0;
-    num_monsters = 0;
+    num_treasures = 5;
+    num_spaces = 10;
+    num_monsters = 8;
     board_layout = "|*";
 }
 
-Gameboard::Gameboard(int treasures, int spaces, string layout)
+Gameboard::Gameboard(int treasures, int spaces, int monsters, string layout)
 {
-    percent_treasures = treasures;
-    percent_spaces = spaces;
+    num_treasures = treasures;
+    num_spaces = spaces;
+    num_monsters = monsters;
     board_layout = layout;
 }
+
+// Gameboard Member Functions //
 
 int Gameboard::p_spaces() const
 {
@@ -98,24 +102,39 @@ string Gameboard::get_layout() const
     return board_layout;
 }
 
+string Gameboard::get_board() const
+{
+    return gameboard;
+}
+
 void Gameboard::set_layout(string layout)
 {
     board_layout = layout;
 }
 
-void Gameboard::create_gameboard(Gameboard& Board)
+void Gameboard::create_gameboard(Gameboard &Board)
 {
-    calc_board_perc(Board);
+    int g_size = (Board.gameboard).size();
+    string row = "";
+    for(int count = 0;count < g_size;count++)
+    {
+    	row += Board.board_layout;
+    	if(((count + 1) % 5) == 0)
+    	{
+    		(Board.gameboard).push_back(row);
+    	}
+    }
 }
 
 // ************************ //
 //   Function Declarations  //
 // ************************ //
 
-void calc_board_perc(Gameboard& Board)
-{
-    Board.set_layout("david");
-}
+// void calc_board_perc(Gameboard& Board)
+// {
+//    event_size = (Board.get_board).size() - 2;
+//    
+// }
 
 int rand_num(int num)
 {
@@ -135,8 +154,6 @@ vector<int> initialize_vec(vector<int> event_positions)
 
 void game_start(Gameboard& Board)
 {
-    Board.set_p_treasures(3);
-    Board.set_p_spaces(2);
 	cout << "...You find yourself surrounded by suffocating blackness, your breath quickly crystallizing in the icy air..." << endl
 	     << "...Your memory is faint but you notice a glimmer of light in the distance and taking your sword, you set off..." << endl;
 }
