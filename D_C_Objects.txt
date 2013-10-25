@@ -4,46 +4,86 @@
 |*|*|*|*|*|
 |*|*|*|*|*|
 
-class player
+class Player
 {
-	private:
-		int attack;
-		int defense;
-		int health;
-		int position;
-	public:
-		int defense() const;
-		int attack() const;
-		int health() const;
-		int position();
-		void change_health(int);
-		void change_attack(int);
-		void change_defense(int);
-		int change_posititon(char);
-		void display_stats();
+		private:
+				int attack;
+                int defense;
+                int health;
+                int position;
+				int score;
+				int exp;
+        public:
+                int defense() const;
+                int attack() const;
+                int health() const;
+                int position() const;
+				int exp() const;
+                void set_health(int);
+                void set_attack(int);
+                void set_defense(int);
+                void set_posititon(char);
+				void set_exp(int);
+				// Can make this a non member function? //
+                void display_stats();
+				
 }
 
-class gameboard()
+class Gameboard()
 {
-	private:
-		string board_layout;
-		vector<string> gameboard;
-	public:
-		void create_gameboard();
+        private:
+				int percent_treasures;
+				int percent_spaces;
+				int num_monsters;
+                string board_layout;
+                vector<string> gameboard;
+        public:
+				int p_spaces();
+				int n_monsters();
+				int p_treasures();
+				void set_p_treasures(int);
+				void set_p_spaces(int);
+				void set_n_monsters(int);
+                void create_gameboard();
 };
 
-class monster
+class Monster
 {
-	private:
-		int attack;
-		int defense;
-		int health;
-	public:
-		int defense() const;
-		int attack() const;
-		int health() const;
-		void change_health(int);
+        private:
+                int attack;
+                int defense;
+                int health;
+				int position;
+				int score_raise;
+        public:
+				int position() const;
+                int defense() const;
+                int attack() const;
+                int health() const;
+				void set_position(int);
+				void set_defense(int);
+				void set_attack(int);
+				void set_health(int);
 };
+
+class Treasure
+{
+		private:
+			int position;
+			int treasure;
+			int score_raise;
+			int defense_raise;
+			int attack_raise;
+		public:
+			int position() const;
+			int get_treasure() const;
+			int get_score_raise() const;
+			int get_stat_raise() const;
+			void set_position(int);
+			void set_treasure(int);
+			void set_score_raise(int);
+			void set_stat_raise(int);
+}
 
 void game_start()
 {
@@ -56,7 +96,7 @@ void gameboard::create_gameboard()
 	
 }
 
-char create_board_pattern(int board_size, string board_pattern)
+string create_board_pattern(int board_size, string board_pattern)
 {
 	string new_pattern = "";
 	for(int count = 0; count < board_size; count++)
@@ -64,5 +104,36 @@ char create_board_pattern(int board_size, string board_pattern)
 		new_pattern += board_pattern;
 	}
 	new_pattern += '|';
+	return new_pattern;
 }
 
+int linear_search(vector<int>, int);
+
+int linear_search(vector<int> event_positions, int search_num)
+{
+    int ep_size = event_positions.size();
+    for(int count = 0;count < ep_size;count++)
+    {
+        if(event_positions[count] == search_num)
+        {
+            return(1);
+        }
+    }
+    return(0);
+}
+
+percent_treasures = 3;
+percent_spaces = 2;
+event_size = size_of_gameboard - 2
+num_of_treasures = (size of gameboard - 2) / treasure_divided;
+rest = event_size - num_of_treasures;
+num_empty_spaces = rest / spaces_divided;
+num_monsters = rest - num_empty_spaces;
+when new room, treasure_divide + 1
+
+void calc_board_perc();
+
+void calc_board_perc()
+{
+	
+}
