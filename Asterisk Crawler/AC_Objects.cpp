@@ -18,7 +18,7 @@ private:
     int num_spaces;
     int num_monsters;
     string board_layout;
-    vector<string> gameboard(5);
+    vector<string> gameboard;
 public:
     Gameboard(int, int, int, string);
     Gameboard();
@@ -26,7 +26,7 @@ public:
     int n_monsters() const;
     int p_treasures() const;
     string get_layout() const;
-    string get_board() const;
+    vector<string> get_board() const;
     void set_layout(string);
     void set_p_treasures(int);
     void set_p_spaces(int);
@@ -48,6 +48,13 @@ void game_start(Gameboard&);
 
 void calc_board_perc(Gameboard&);
 
+// ************************* //
+//        Enumerations       //
+// ************************* //
+
+enum TreasureType {ATTACK, DEFENSE, HEALTH, POTION};
+
+
 // ************************** //
 // Gameboard Member Functions //
 // ************************** //
@@ -60,6 +67,7 @@ Gameboard::Gameboard()
     num_spaces = 10;
     num_monsters = 8;
     board_layout = "|*";
+    gameboard.resize(5);
 }
 
 Gameboard::Gameboard(int treasures, int spaces, int monsters, string layout)
@@ -68,13 +76,14 @@ Gameboard::Gameboard(int treasures, int spaces, int monsters, string layout)
     num_spaces = spaces;
     num_monsters = monsters;
     board_layout = layout;
+    gameboard.resize(5);
 }
 
 // Gameboard Member Functions //
 
 int Gameboard::p_spaces() const
 {
-    return percent_spaces;
+    return num_spaces;
 }
 
 int Gameboard::n_monsters() const
@@ -84,17 +93,17 @@ int Gameboard::n_monsters() const
 
 int Gameboard::p_treasures() const
 {
-    return percent_treasures;
+    return num_treasures;
 }
 
 void Gameboard::set_p_treasures(int num)
 {
-    percent_treasures = num;
+    num_treasures = num;
 }
 
 void Gameboard::set_p_spaces(int num)
 {
-    percent_spaces = num;
+    num_spaces = num;
 }
 
 string Gameboard::get_layout() const
@@ -102,7 +111,7 @@ string Gameboard::get_layout() const
     return board_layout;
 }
 
-string Gameboard::get_board() const
+vector<string> Gameboard::get_board() const
 {
     return gameboard;
 }
@@ -114,14 +123,19 @@ void Gameboard::set_layout(string layout)
 
 void Gameboard::create_gameboard(Gameboard &Board)
 {
-    int g_size = (Board.gameboard).size();
+    int g_size = (Board.gameboard).size() * 5;
     string row = "";
     for(int count = 0;count < g_size;count++)
     {
-    	row += Board.board_layout;
+    	row = row + Board.board_layout;
     	if(((count + 1) % 5) == 0)
     	{
+    	    cout << row << endl;
+    	    // There's a problem with this line of code, or at least I think the
+    	    // problem lies in this line. The vector of string doesn't get initialized
+    	    // correctly.
     		(Board.gameboard).push_back(row);
+    		row = "";
     	}
     }
 }
@@ -133,7 +147,7 @@ void Gameboard::create_gameboard(Gameboard &Board)
 // void calc_board_perc(Gameboard& Board)
 // {
 //    event_size = (Board.get_board).size() - 2;
-//    
+//
 // }
 
 int rand_num(int num)

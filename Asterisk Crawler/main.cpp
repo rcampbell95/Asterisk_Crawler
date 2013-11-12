@@ -15,8 +15,8 @@ int main()
     // Will be Part of create gameboard function //
     Gameboard Board;
     random_shuffle(event_positions.begin(),event_positions.end());
-    calc_board_perc(Board);
     Board.create_gameboard(Board);
+    cout << Board.get_board()[0];
     cout << Board.get_layout();
     //for(int count = 0;count < )
     //int board_size = 5;
