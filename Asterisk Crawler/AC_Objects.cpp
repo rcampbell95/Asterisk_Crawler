@@ -4,12 +4,13 @@
 #include <cstdlib>
 #include <time.h>
 #include <algorithm>
+#include <fstream>
 
 using namespace std;
 
-//********************//
-// Class Declarations //
-//********************//
+///********************//
+/// Class Declarations //
+///********************//
 
 class Gameboard
 {
@@ -31,12 +32,13 @@ public:
     void set_p_treasures(int);
     void set_p_spaces(int);
     void set_n_monsters(int);
-    void create_gameboard(Gameboard&);
+    /// You can make the gameboard a constant for now and later implement the function correctly.
+    ///void create_gameboard(Gameboard&);
 };
 
-// ************************* //
-//    Function Prototypes    //
-// ************************* //
+/// ************************* //
+///    Function Prototypes    //
+/// ************************* //
 
 void game_start(Gameboard);
 
@@ -46,20 +48,20 @@ vector<int> initialize_vec(vector<int>);
 
 void game_start(Gameboard&);
 
-void calc_board_perc(Gameboard&);
+///void calc_board_perc(Gameboard&);
 
-// ************************* //
-//        Enumerations       //
-// ************************* //
+/// ************************* //
+///        Enumerations       //
+/// ************************* //
 
 enum TreasureType {ATTACK, DEFENSE, HEALTH, POTION};
 
 
-// ************************** //
-// Gameboard Member Functions //
-// ************************** //
+/// ************************** //
+/// Gameboard Member Functions //
+/// ************************** //
 
-// Gameboard Constructors //
+/// Gameboard Constructors //
 
 Gameboard::Gameboard()
 {
@@ -79,7 +81,7 @@ Gameboard::Gameboard(int treasures, int spaces, int monsters, string layout)
     gameboard.resize(5);
 }
 
-// Gameboard Member Functions //
+/// Gameboard Member Functions //
 
 int Gameboard::p_spaces() const
 {
@@ -131,24 +133,24 @@ void Gameboard::create_gameboard(Gameboard &Board)
     	if(((count + 1) % 5) == 0)
     	{
     	    cout << row << endl;
-    	    // There's a problem with this line of code, or at least I think the
-    	    // problem lies in this line. The vector of string doesn't get initialized
-    	    // correctly.
+    	    /// There's a problem with this line of code, or at least I think the
+    	    /// problem lies in this line. The vector of string doesn't get initialized
+    	    /// correctly.
     		(Board.gameboard).push_back(row);
     		row = "";
     	}
     }
 }
 
-// ************************ //
-//   Function Declarations  //
-// ************************ //
+/// ************************ //
+///   Function Declarations  //
+/// ************************ //
 
-// void calc_board_perc(Gameboard& Board)
-// {
-//    event_size = (Board.get_board).size() - 2;
-//
-// }
+/// void calc_board_perc(Gameboard& Board)
+/// {
+///    event_size = (Board.get_board).size() - 2;
+///
+/// }
 
 int rand_num(int num)
 {
