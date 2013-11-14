@@ -40,13 +40,13 @@ public:
 ///    Function Prototypes    //
 /// ************************* //
 
-void game_start(Gameboard);
-
 int rand_num(int);
 
 vector<int> initialize_vec(vector<int>);
 
 void game_start(Gameboard&);
+
+void display_board(Gameboard);
 
 ///void calc_board_perc(Gameboard&);
 
@@ -69,7 +69,12 @@ Gameboard::Gameboard()
     num_spaces = 10;
     num_monsters = 8;
     board_layout = "|*";
-    gameboard.resize(5);
+    gameboard.resize(25);
+    for(int count = 0;count < gameboard.size();count++)
+    {
+        gameboard[count] = board_layout;
+    }
+    gameboard[0][1] = '@';
 }
 
 Gameboard::Gameboard(int treasures, int spaces, int monsters, string layout)
@@ -78,7 +83,7 @@ Gameboard::Gameboard(int treasures, int spaces, int monsters, string layout)
     num_spaces = spaces;
     num_monsters = monsters;
     board_layout = layout;
-    gameboard.resize(5);
+    gameboard.resize(25);
 }
 
 /// Gameboard Member Functions //
@@ -122,7 +127,8 @@ void Gameboard::set_layout(string layout)
 {
     board_layout = layout;
 }
-
+/// For now, I won't implement this function. I'll just have the gameboard have a set size.
+/*
 void Gameboard::create_gameboard(Gameboard &Board)
 {
     int g_size = (Board.gameboard).size() * 5;
@@ -141,7 +147,7 @@ void Gameboard::create_gameboard(Gameboard &Board)
     	}
     }
 }
-
+*/
 /// ************************ //
 ///   Function Declarations  //
 /// ************************ //
@@ -151,6 +157,18 @@ void Gameboard::create_gameboard(Gameboard &Board)
 ///    event_size = (Board.get_board).size() - 2;
 ///
 /// }
+
+void display_board(Gameboard board)
+{
+    int board_size = board.get_board().size();
+    vector<string> vec_board = board.get_board();
+    for(int count = 0;count < board_size;count++)
+    {
+        cout << vec_board[count];
+        if((count + 1) % 5 == 0)
+            cout << endl;
+    }
+}
 
 int rand_num(int num)
 {
