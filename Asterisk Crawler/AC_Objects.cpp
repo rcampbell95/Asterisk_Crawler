@@ -44,7 +44,7 @@ int rand_num(int);
 
 vector<int> initialize_vec(vector<int>);
 
-void game_start(Gameboard&);
+void game_start(Gameboard&,vector<int> event_positions);
 
 void display_board(Gameboard);
 
@@ -55,6 +55,8 @@ void display_board(Gameboard);
 /// ************************* //
 
 enum TreasureType {ATTACK, DEFENSE, HEALTH, POTION};
+
+enum EventTypes {MONSTER, TREASURE, SPACE};
 
 
 /// ************************** //
@@ -77,13 +79,19 @@ Gameboard::Gameboard()
     gameboard[0][1] = '@';
 }
 
-Gameboard::Gameboard(int treasures, int spaces, int monsters, string layout)
+Gameboard::Gameboard(int treasures, int spaces, int monsters, string layout, int gameboard_size)
 {
     num_treasures = treasures;
     num_spaces = spaces;
     num_monsters = monsters;
     board_layout = layout;
-    gameboard.resize(25);
+    gameboard.resize(game_board_size);
+    // This would be used for a more dynamic gameboard and more levels. 
+    for(int count = 0;count < gameboard.size();count++)
+    {
+        gameboard[count] = board_layout;
+    }
+    gameboard[0][1] = '@';
 }
 
 /// Gameboard Member Functions //
@@ -179,16 +187,25 @@ int rand_num(int num)
 vector<int> initialize_vec(vector<int> event_positions)
 {
     int ep_length = event_positions.size();
-    for(int count = 0;count < ep_length;count++)
+    /// Would be simple to make thse harcoded numbers percents instead of harcoding them. I'll try this just to hurry the
+    /// alpha version then see how I can optimize it.
+    for(int count = 1;count < ep_length;count++)
     {
-        event_positions[count] = count;
+    	if(count < 11)
+        	event_positions[count] = SPACE;
+        else if(count < 19)
+        	event_positions[count] = MONSTER;
+        else if(count < 24)
+        	event_positions[count] = TREASURE;
     }
     return event_positions;
 }
 
-void game_start(Gameboard& Board)
+void game_start(Gameboard& Board, int event_positions)
 {
 	cout << "...You find yourself surrounded by suffocating blackness, your breath quickly crystallizing in the icy air..." << endl
 	     << "...Your memory is faint but you notice a glimmer of light in the distance and taking your sword, you set off..." << endl;
+	random_shuffle(event_positions.begin(),event_positions.end());
+	display_board(Board);
 }
 
