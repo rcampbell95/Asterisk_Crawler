@@ -10,14 +10,13 @@ using namespace std;
 
 int main()
 {
-    int num = 23;
+    int num = 25;
     vector<int> event_positions(num);
     // Will be Part of create gameboard function //
     Gameboard Board;
-    random_shuffle(event_positions.begin(),event_positions.end());
     ///cout << Board.get_board()[0] << Board.get_board()[1];
     ///cout << Board.get_layout();
-    display_board(Board);
+    game_start(Board, event_positions);
     //for(int count = 0;count < )
     //int board_size = 5;
     //string board_pattern = "|*|*|*|*|*|";
