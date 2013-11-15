@@ -60,7 +60,7 @@ void display_board(vector<int>);
 
 enum TreasureType {ATTACK, DEFENSE, HEALTH, POTION};
 
-enum EventTypes {MONSTER, TREASURE, SPACE};
+enum EventTypes {MONSTER, TREASURE, SPACE,EXIT};
 
 
 /// ************************** //
@@ -83,15 +83,17 @@ Gameboard::Gameboard()
     }
     gameboard[0][1] = '@';
     int ep_length = event_positions.size();
+    event_positions[0] = 0;
     for(int count = 1;count < ep_length;count++)
     {
     	if(count < 11)
         	event_positions[count] = SPACE;
         else if(count < 19)
         	event_positions[count] = MONSTER;
-        else if(count < ep_length - 1)
+        else if(count < 24)
         	event_positions[count] = TREASURE;
     }
+    event_positions[ep_length-1] = EXIT;
 }
 
 Gameboard::Gameboard(int treasures, int spaces, int monsters, string layout, int gameboard_size)
@@ -202,7 +204,7 @@ void display_board(vector<int> vector_to_display)
 {
     int board_size = vector_to_display.size();
     vector<int> vec_board = vector_to_display;
-    for(int count = 1;count < board_size - 1;count++)
+    for(int count = 1;count < board_size;count++)
     {
         cout << vec_board[count];
         if((count + 1) % 5 == 0)
