@@ -10,13 +10,11 @@ using namespace std;
 
 int main()
 {
-    int num = 25;
-    vector<int> event_positions(num);
     // Will be Part of create gameboard function //
     Gameboard Board;
     ///cout << Board.get_board()[0] << Board.get_board()[1];
     ///cout << Board.get_layout();
-    game_start(Board, event_positions);
+    game_start(Board);
     //for(int count = 0;count < )
     //int board_size = 5;
     //string board_pattern = "|*|*|*|*|*|";
