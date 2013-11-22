@@ -11,10 +11,11 @@ using namespace std;
 int main()
 {
     // Will be Part of create gameboard function //
+    Player Adventurer;
     Gameboard Board;
     ///cout << Board.get_board()[0] << Board.get_board()[1];
     ///cout << Board.get_layout();
-    game_start(Board);
+    game_start(Board, Adventurer);
     //for(int count = 0;count < )
     //int board_size = 5;
     //string board_pattern = "|*|*|*|*|*|";
