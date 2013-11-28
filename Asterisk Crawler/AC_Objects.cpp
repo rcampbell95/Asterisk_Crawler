@@ -1,106 +1,28 @@
+///*******************///
+///    Constants      ///
+///*******************///
+
+#define INITIAL_GAMEBOARD_LENGTH 5
+#define INITIAL_GAMEBOARD_SIZE 25
+#define INITIAL_TREASURES 5
+#define INITIAL_SPACES 10
+#define INITIAL_MONSTERS 8
+
+///*******************///
+///    Dependencies   ///
+///*******************///
+
 #include <iostream>
 #include <vector>
 #include <string>
 #include <cstdlib>
 #include <time.h>
 #include <algorithm>
-///#include <fstream>
+//#include <fstream>
 #include <iomanip>
-
+#include "AC_Functions.h"
 
 using namespace std;
-
-///********************//
-/// Class Declarations //
-///********************//
-
-class Gameboard
-{
-private:
-    int num_treasures;
-    int num_spaces;
-    int num_monsters;
-    string board_layout;
-    vector<string> gameboard;
-    vector<int> event_positions;
-public:
-    Gameboard(int, int, int, string,int);
-    Gameboard();
-    int p_spaces() const;
-    int n_monsters() const;
-    int p_treasures() const;
-    string get_layout() const;
-    vector<string> get_board() const;
-    vector<int> get_event_positions() const;
-    void set_layout(string);
-    void set_p_treasures(int);
-    void set_p_spaces(int);
-    void set_n_monsters(int);
-    void set_event_positions(vector<int>);
-    /// You can make the gameboard a constant for now and later implement the function correctly.
-    ///void create_gameboard(Gameboard&);
-};
-
-class Player
-{
-		private:
-		    string name;
-            int attack;
-            int defense;
-            int current_health;
-            int total_health;
-            int position;
-            int score;
-            int current_exp;
-            int total_exp;
-        public:
-            Player();
-            string get_name() const;
-            int get_defense() const;
-            int get_attack() const;
-            int get_current_health() const;
-            int get_total_health() const;
-            int get_position() const;
-            int get_current_exp() const;
-            int get_total_exp() const;
-            void set_name(string);
-            void set_current_health(int);
-            void set_total_health(int);
-            void set_attack(int);
-            void set_defense(int);
-            void set_position(int);
-            void set_current_exp(int);
-            void set_total_exp(int);
-};
-
-/// ************************* //
-///    Function Prototypes    //
-/// ************************* //
-
-int rand_num(int);
-
-void initialize_vec(vector<int>&);
-
-void game_start(Gameboard&,Player&);
-
-void display_board(vector<string>);
-
-void display_board(vector<int>);
-
-void display_stats(Player&);
-
-int movement();
-
-///void calc_board_perc(Gameboard&);
-
-/// ************************* //
-///        Enumerations       //
-/// ************************* //
-
-enum TreasureType {ATTACK, DEFENSE, HEALTH, POTION};
-
-enum EventTypes {SPACE, TREASURE, MONSTER,EXIT};
-
 
 /// ************************** //
 /// Gameboard Member Functions //
@@ -110,28 +32,38 @@ enum EventTypes {SPACE, TREASURE, MONSTER,EXIT};
 
 Gameboard::Gameboard()
 {
-    num_treasures = 5;
-    num_spaces = 10;
-    num_monsters = 8;
+    num_treasures = INITIAL_TREASURES;
+    num_spaces = INITIAL_SPACES;
+    num_monsters = INITIAL_MONSTERS;
     board_layout = "|*";
-    gameboard.resize(25);
-    event_positions.resize(25);
+    gameboard.resize(INITIAL_GAMEBOARD_SIZE);
+    event_positions.resize(INITIAL_GAMEBOARD_SIZE);
+
     for(int count = 0;count < gameboard.size();count++)
     {
         gameboard[count] = board_layout;
     }
-    gameboard[0][1] = '@';
+
+    ///gameboard[0][1] = '@';
     int ep_length = event_positions.size();
-    event_positions[0] = 5;
+    event_positions[0] = INITIAL_GAMEBOARD_LENGTH;
+
     for(int count = 1;count < ep_length;count++)
     {
-    	if(count < 11)
-        	event_positions[count] = SPACE;
-        else if(count < 19)
-        	event_positions[count] = MONSTER;
-        else if(count < 24)
+    	if(count < INITIAL_GAMEBOARD_SIZE - 14)
+        {
+            event_positions[count] = SPACE;
+        }
+        else if(count < INITIAL_GAMEBOARD_SIZE - 6)
+        {
+            event_positions[count] = MONSTER;
+        }
+        else if(count < INITIAL_GAMEBOARD_SIZE - 1)
+        {
         	event_positions[count] = TREASURE;
+        }
     }
+
     event_positions[ep_length-1] = EXIT;
 }
 
@@ -143,7 +75,7 @@ Gameboard::Gameboard(int treasures, int spaces, int monsters, string layout, int
     board_layout = layout;
     gameboard.resize(gameboard_size);
     // This would be used for a more dynamic gameboard and more levels.
-    for(int count = 0;count < gameboard.size();count++)
+    for(int count = 0;count < gameboard_size;count++)
     {
         gameboard[count] = board_layout;
     }
@@ -231,11 +163,11 @@ void Gameboard::create_gameboard(Gameboard &Board)
 
 Player::Player()
 {
-    set_attack(10 + rand_num(4));
+    set_attack(10 + rand_num(6));
     int ex_health = rand_num(5);
     set_current_health(10 + ex_health);
     set_total_health(10 + ex_health);
-    set_defense(10 + rand_num(6));
+    set_defense(10 + rand_num(4));
     set_current_exp(0);
     set_total_exp(20);
     set_position(0);
@@ -323,6 +255,62 @@ void Player::set_position(int player_position)
     position = player_position;
 }
 
+/// ************************* //
+/// Treasure Member Functions //
+/// ************************* //
+
+/// Treasure Constructors ///
+
+Treasure::Treasure()
+{
+    total_health_raise = 0;
+    health_raise = 0;
+    attack_raise = 0;
+    defense_raise = 0;
+}
+
+/// Treasure Member Functions ///
+
+int Treasure::get_total_health_r()
+{
+    return(total_health_raise);
+}
+
+int Treasure::get_health_r()
+{
+    return(health_raise);
+}
+
+int Treasure::get_attack_r()
+{
+    return(attack_raise);
+}
+
+int Treasure::get_defense_r()
+{
+    return(defense_raise);
+}
+
+void Treasure::set_total_health_r(int raise)
+{
+    total_health_raise = raise;
+}
+
+void Treasure::set_health_r(int raise)
+{
+    health_raise = raise;
+}
+
+void Treasure::set_defense_r(int raise)
+{
+    defense_raise = raise;
+}
+
+void Treasure::set_attack_r(int raise)
+{
+    attack_raise = raise;
+}
+
 /// ************************ //
 ///   Function Declarations  //
 /// ************************ //
@@ -333,14 +321,18 @@ void Player::set_position(int player_position)
 ///
 /// }
 
-void display_board(vector<string> vector_to_display)
+void display_board(vector<string> vector_to_display,int player_position)
 {
     int board_size = vector_to_display.size();
     vector<string> vec_board = vector_to_display;
     for(int count = 0;count < board_size;count++)
     {
+        if(count == player_position)
+        {
+            vec_board[count][1] = '@';
+        }
         cout << vec_board[count];
-        if((count + 1) % 5 == 0)
+        if((count + 1) % INITIAL_GAMEBOARD_LENGTH == 0)
             cout << endl;
     }
 }
@@ -352,15 +344,16 @@ void display_board(vector<int> vector_to_display)
     for(int count = 0;count < board_size;count++)
     {
         cout << vec_board[count];
-        if((count + 1) % 5 == 0)
+        if((count + 1) % INITIAL_GAMEBOARD_LENGTH == 0)
             cout << endl;
     }
 }
 
 
+
 int rand_num(int num)
 {
-    srand(time(0));
+    srand(time(NULL));
     return(rand() % num);
 }
 
@@ -388,13 +381,13 @@ void game_start(Gameboard& Board, Player& Adventurer)
 	cout << "...You find yourself surrounded by suffocating blackness, your breath quickly crystallizing in the icy air..." << endl
 	     << "...Your memory is faint but you notice a glimmer of light in the distance and taking your sword, you set off..." << endl;
     cout << "Your name, brave adventurer? >> ";
-    cin >> player_name;
+    getline(cin,player_name);
     Adventurer.set_name(player_name);
     /// Initialize a integer vector that have the value of the event position vector, and will be sued to shuffle the event positions. The event positions vector
     /// will then be assigned the value of this temporary vector
     vector<int> positions = Board.get_event_positions();
 	random_shuffle(positions.begin() + 1,positions.end() - 1);
-	display_board(Board.get_board());
+	display_board(Board.get_board(),Adventurer.get_position());
 	///display_board(positions);
 	Board.set_event_positions(positions);
 	display_stats(Adventurer);
@@ -407,4 +400,52 @@ void display_stats(Player& Adventurer)
          << "Attack: " << setw(6) << Adventurer.get_attack() << endl
          << "Defense: " << setw(5) << Adventurer.get_defense() << endl
          << "Experience: " << Adventurer.get_current_exp() << "/" << Adventurer.get_total_exp();
+}
+
+void movement(Player& Adventurer)
+{
+    static int calls = 0;
+    char player_move;
+    cout << "\n>> ";
+    if(calls > 0)
+        cin.ignore();
+    cin.get(player_move);
+    /// Input validation for correct character.
+    while(player_move != 'w' && player_move != 's' && player_move != 'a' && player_move != 'd')
+    {
+        cout << "\n>> ";
+        cin.ignore();
+        cin.get(player_move);
+    }
+    /// Input validation to make sure the player doesn't move off the gameboard.
+    while(check_move(Adventurer.get_position(), player_move))
+    {
+        cout << "\n>> ";
+        cin.ignore();
+        cin.get(player_move);
+    }
+    if(player_move == 'w')
+    {
+        Adventurer.set_position(Adventurer.get_position()-5);
+    }
+    else if(player_move == 's')
+    {
+        Adventurer.set_position(Adventurer.get_position()+5);
+    }
+    else if(player_move == 'd')
+    {
+        Adventurer.set_position(Adventurer.get_position()+1);
+    }
+    else
+    {
+        Adventurer.set_position(Adventurer.get_position()-1);
+    }
+    /// Static variable for the if statement for the first cin.ignore().
+    calls++;
+}
+
+bool check_move(int player_position, char player_move)
+{
+    return((player_position < 5 && player_move == 'w') || (player_position == 0 && player_move == 'a') ||
+           (player_position > 19 && player_move == 's') || (player_position == 24 && player_move == 'd'));
 }

@@ -32,9 +32,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="AC_Objects.cpp">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
+		<Unit filename="AC_Functions.h" />
+		<Unit filename="AC_Objects.cpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
