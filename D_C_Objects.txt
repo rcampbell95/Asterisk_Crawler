@@ -140,5 +140,6 @@ void calc_board_perc()
 
 void remove_event_position(Gameboard& gameboard,int player_position}
 {
-
+	vector<?> event_positions = gameboard.get_event_positions();
+	event_positions(player_position) = SPACE;
 }
