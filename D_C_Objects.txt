@@ -137,3 +137,8 @@ void calc_board_perc()
 {
 	
 }
+
+void remove_event_position(Gameboard& gameboard,int player_position}
+{
+
+}
