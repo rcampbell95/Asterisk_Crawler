@@ -17,6 +17,14 @@
 using namespace std;
 
 /// ************************* //
+///        Enumerations       //
+/// ************************* //
+
+enum TreasureType {ATTACK, DEFENSE, HEALTH, POTION};
+
+enum EventTypes {SPACE, TREASURE, MONSTER,EXIT};
+
+/// ************************* //
 ///    Class Declarations     //
 /// ************************* //
 
@@ -28,7 +36,9 @@ private:
     int num_monsters;
     string board_layout;
     vector<string> gameboard;
+    /// Could the type of this vector cause any problems? Someting to check into.
     vector<int> event_positions;
+    vector<TreasureType> treasure_type;
 public:
     Gameboard(int, int, int, string,int);
     Gameboard();
@@ -38,13 +48,35 @@ public:
     string get_layout() const;
     vector<string> get_board() const;
     vector<int> get_event_positions() const;
+    vector<TreasureType> get_treasure_type() const;
     void set_layout(string);
     void set_p_treasures(int);
     void set_p_spaces(int);
     void set_n_monsters(int);
     void set_event_positions(vector<int>);
+    /// Maybe make a setter function for treasure_type?
     /// You can make the gameboard a constant for now and later implement the function correctly.
     ///void create_gameboard(Gameboard&);
+};
+
+class Treasure
+{
+private:
+    int total_health_raise;
+    int health_raise;
+    int attack_raise;
+    int defense_raise;
+public:
+    /// Add const keyword on getter functions.
+    Treasure();
+    void set_total_health_r(int);
+    void set_health_r(int);
+    void set_attack_r(int);
+    void set_defense_r(int);
+    int get_total_health_r() const;
+    int get_health_r() const;
+    int get_attack_r() const;
+    int get_defense_r() const;
 };
 
 class Player
@@ -77,26 +109,9 @@ class Player
             void set_position(int);
             void set_current_exp(int);
             void set_total_exp(int);
+            void stat_raise(Treasure&,TreasureType);
 };
 
-class Treasure
-{
-private:
-    int total_health_raise;
-    int health_raise;
-    int attack_raise;
-    int defense_raise;
-public:
-    Treasure();
-    void set_total_health_r(int);
-    void set_health_r(int);
-    void set_attack_r(int);
-    void set_defense_r(int);
-    int get_total_health_r();
-    int get_health_r();
-    int get_attack_r();
-    int get_defense_r();
-};
 
 /// ************************* //
 ///    Function Prototypes    //
@@ -118,15 +133,8 @@ void movement(Player&);
 
 bool check_move(int,char);
 
+TreasureType initialize_treasure(Treasure&,vector<TreasureType>);
+
 ///void calc_board_perc(Gameboard&);
-
-/// ************************* //
-///        Enumerations       //
-/// ************************* //
-
-enum TreasureType {ATTACK, DEFENSE, HEALTH, POTION};
-
-enum EventTypes {SPACE, TREASURE, MONSTER,EXIT};
-
 
 #endif // AC_FUNCTIONS_H_INCLUDED

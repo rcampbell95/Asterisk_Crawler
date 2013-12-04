@@ -38,16 +38,14 @@ Gameboard::Gameboard()
     board_layout = "|*";
     gameboard.resize(INITIAL_GAMEBOARD_SIZE);
     event_positions.resize(INITIAL_GAMEBOARD_SIZE);
-
+    treasure_type.resize(num_treasures);
     for(int count = 0;count < gameboard.size();count++)
     {
         gameboard[count] = board_layout;
     }
-
     ///gameboard[0][1] = '@';
     int ep_length = event_positions.size();
     event_positions[0] = INITIAL_GAMEBOARD_LENGTH;
-
     for(int count = 1;count < ep_length;count++)
     {
     	if(count < INITIAL_GAMEBOARD_SIZE - 14)
@@ -63,7 +61,13 @@ Gameboard::Gameboard()
         	event_positions[count] = TREASURE;
         }
     }
-
+    for(int count = 0;count < num_treasures;count++)
+    {
+        if(count < 4)
+            treasure_type[count] = static_cast<TreasureType>(count);
+        else
+            treasure_type[count] = POTION;
+    }
     event_positions[ep_length-1] = EXIT;
 }
 
@@ -122,6 +126,11 @@ vector<string> Gameboard::get_board() const
 vector<int> Gameboard::get_event_positions() const
 {
     return event_positions;
+}
+
+vector<TreasureType> Gameboard::get_treasure_type() const
+{
+    return treasure_type;
 }
 
 void Gameboard::set_layout(string layout)
@@ -255,6 +264,34 @@ void Player::set_position(int player_position)
     position = player_position;
 }
 
+void Player::stat_raise(Treasure& Buff,TreasureType type_stat_raise)
+{
+    if(type_stat_raise == ATTACK)
+    {
+        attack += Buff.get_attack_r();
+    }
+    else if(type_stat_raise == DEFENSE)
+    {
+        defense += Buff.get_defense_r();
+    }
+    else if(type_stat_raise == HEALTH)
+    {
+        total_health += Buff.get_total_health_r();
+        current_health += Buff.get_total_health_r();
+    }
+    else
+    {
+        if((current_health + Buff.get_health_r()) < total_health)
+        {
+            current_health += Buff.get_health_r();
+        }
+        else
+        {
+            current_health = total_health;
+        }
+    }
+}
+
 /// ************************* //
 /// Treasure Member Functions //
 /// ************************* //
@@ -271,22 +308,22 @@ Treasure::Treasure()
 
 /// Treasure Member Functions ///
 
-int Treasure::get_total_health_r()
+int Treasure::get_total_health_r() const
 {
     return(total_health_raise);
 }
 
-int Treasure::get_health_r()
+int Treasure::get_health_r() const
 {
     return(health_raise);
 }
 
-int Treasure::get_attack_r()
+int Treasure::get_attack_r() const
 {
     return(attack_raise);
 }
 
-int Treasure::get_defense_r()
+int Treasure::get_defense_r() const
 {
     return(defense_raise);
 }
@@ -325,7 +362,8 @@ void display_board(vector<string> vector_to_display,int player_position)
 {
     int board_size = vector_to_display.size();
     vector<string> vec_board = vector_to_display;
-    for(int count = 0;count < board_size;count++)
+    for(int count = 0
+        ;count < board_size;count++)
     {
         if(count == player_position)
         {
@@ -411,14 +449,7 @@ void movement(Player& Adventurer)
         cin.ignore();
     cin.get(player_move);
     /// Input validation for correct character.
-    while(player_move != 'w' && player_move != 's' && player_move != 'a' && player_move != 'd')
-    {
-        cout << "\n>> ";
-        cin.ignore();
-        cin.get(player_move);
-    }
-    /// Input validation to make sure the player doesn't move off the gameboard.
-    while(check_move(Adventurer.get_position(), player_move))
+    while((player_move != 'w' && player_move != 's' && player_move != 'a' && player_move != 'd') || check_move(Adventurer.get_position(), player_move))
     {
         cout << "\n>> ";
         cin.ignore();
@@ -448,4 +479,31 @@ bool check_move(int player_position, char player_move)
 {
     return((player_position < 5 && player_move == 'w') || (player_position == 0 && player_move == 'a') ||
            (player_position > 19 && player_move == 's') || (player_position == 24 && player_move == 'd'));
+}
+
+TreasureType initialize_treasure(Treasure& Buff,vector<TreasureType> treasure_type)
+{
+    static int num_treasure_type = 0;
+    TreasureType buff_type = treasure_type[num_treasure_type++];
+    if(buff_type == ATTACK)
+    {
+        /// Use a define statement for these constants. Call it base stat raise!
+        Buff.set_attack_r(1 + rand_num(2));
+        return ATTACK;
+    }
+    else if(buff_type == DEFENSE)
+    {
+        Buff.set_defense_r(1+rand_num(2));
+        return DEFENSE;
+    }
+    else if(buff_type == HEALTH)
+    {
+        Buff.set_total_health_r(1+rand_num(2));
+        return HEALTH;
+    }
+    else
+    {
+        Buff.set_health_r(5+rand_num(5));
+        return POTION;
+    }
 }
