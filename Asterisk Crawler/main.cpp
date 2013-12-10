@@ -9,30 +9,38 @@ using namespace std;
 
 int main()
 {
-    /// Will be Part of create gameboard function //
+    /// Object Declarations ///
     Player Adventurer;
     Gameboard Board;
     Treasure Buff;
+    Monster Mob;
+    /// Treasure variable to hold the type of treasure ///
     TreasureType temp_treasure;
-    ///cout << Board.get_board()[0] << Board.get_board()[1];
-    ///cout << Board.get_layout();
+    int level = 1;
     game_start(Board, Adventurer);
-    vector<int> event_positions = Board.get_event_positions();
-    while(Adventurer.get_position() < 24)
+    vector<int> event_position_cpy = Board.get_event_positions();
+    while(event_position_cpy[Adventurer.get_position()] != EXIT || Adventurer.get_current_health() > 0)
     {
         movement(Adventurer);
-        if(event_positions[Adventurer.get_position()] == TREASURE)
+        if(Board.get_event_positions()[Adventurer.get_position()] == TREASURE)
         {
             temp_treasure = initialize_treasure(Buff,Board.get_treasure_type());
-            cout << '\n' << Buff.get_total_health_r() << " "
-             << Buff.get_health_r() << " "
-             << Buff.get_attack_r() << " "
-             << Buff.get_defense_r() << '\n';
             Adventurer.stat_raise(Buff,temp_treasure);
+            Board.remove_event_position(Adventurer.get_position());
         }
+
+        else if(Board.get_event_positions()[Adventurer.get_position()] == MONSTER)
+        {
+            initialize_monster(Mob, level);
+        }
+
         display_board(Board.get_board(),Adventurer.get_position());
         display_stats(Adventurer);
     }
+    level += 1;
+
+    /// You may want to make this part of some game_end function, like highscore, saving, other stuff.
+    cout << '\n' << "The exit! Steeling yourself, you ascend the stairs..." << '\n';
     ///for(int count = 0;count < )
     ///int board_size = 5;
     ///string board_pattern = "|*|*|*|*|*|";

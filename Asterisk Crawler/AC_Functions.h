@@ -24,6 +24,8 @@ enum TreasureType {ATTACK, DEFENSE, HEALTH, POTION};
 
 enum EventTypes {SPACE, TREASURE, MONSTER,EXIT};
 
+enum Enemy {BAT, ZOMBIE, SKELETON, GOBLIN};
+
 /// ************************* //
 ///    Class Declarations     //
 /// ************************* //
@@ -54,6 +56,7 @@ public:
     void set_p_spaces(int);
     void set_n_monsters(int);
     void set_event_positions(vector<int>);
+    void remove_event_position(int);
     /// Maybe make a setter function for treasure_type?
     /// You can make the gameboard a constant for now and later implement the function correctly.
     ///void create_gameboard(Gameboard&);
@@ -112,6 +115,31 @@ class Player
             void stat_raise(Treasure&,TreasureType);
 };
 
+class Monster
+{
+private:
+    int attack;
+    int defense;
+    int current_health;
+    int total_health;
+    int exp_raise;
+    int score_raise;
+public:
+    Monster();
+    int get_attack() const;
+    int get_defense() const;
+    int get_current_health() const;
+    int get_total_health() const;
+    int get_exp_raise() const;
+    int get_score_raise() const;
+    void set_attack(int);
+    void set_defense(int);
+    void set_current_health(int);
+    void set_total_health(int);
+    void set_exp_raise(int);
+    void set_score_raise(int);
+};
+
 
 /// ************************* //
 ///    Function Prototypes    //
@@ -129,11 +157,21 @@ void display_board(vector<int>);
 
 void display_stats(Player&);
 
+void display_stats(Monster&/*,Enemy*/);
+
 void movement(Player&);
 
 bool check_move(int,char);
 
 TreasureType initialize_treasure(Treasure&,vector<TreasureType>);
+
+void initialize_monster(Monster&, int);
+
+bool combat(Monster&, Player&/*,Enemy*/);
+
+int damage_done(int, int);
+
+///void remove_event_position(Gameboard&,int);
 
 ///void calc_board_perc(Gameboard&);
 

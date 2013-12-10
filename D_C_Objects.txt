@@ -143,3 +143,40 @@ void remove_event_position(Gameboard& gameboard,int player_position}
 	vector<?> event_positions = gameboard.get_event_positions();
 	event_positions(player_position) = SPACE;
 }
+
+damage_done = (attack / (defense/2 + 1)) + 1 
+
+/// How to expand the gameboard with subsequent floors
+11
+11
+/// Add a row
+11
+11
+11
+/// Then add a column
+111
+111
+111
+
+Increase total experience with level up
+
+int enemy_health = Mob.current_health();
+int player_health = Adventurer.current_health();
+if(enemy_health == 0)
+{
+/// Message
+Adventurer.set_current_exp
+(Mob.get_exp_raise())
+}
+else if(player_health == 0)
+{
+/// Message
+return false;
+}
+else
+{
+display monster stats
+display player stats
+Mob.set_current_health(Mob.get_current_health() - damage_done())
+cin.get();
+}

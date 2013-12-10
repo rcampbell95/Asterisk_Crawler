@@ -7,6 +7,7 @@
 #define INITIAL_TREASURES 5
 #define INITIAL_SPACES 10
 #define INITIAL_MONSTERS 8
+#define MONSTER_BASE_STAT 5
 
 ///*******************///
 ///    Dependencies   ///
@@ -43,7 +44,6 @@ Gameboard::Gameboard()
     {
         gameboard[count] = board_layout;
     }
-    ///gameboard[0][1] = '@';
     int ep_length = event_positions.size();
     event_positions[0] = INITIAL_GAMEBOARD_LENGTH;
     for(int count = 1;count < ep_length;count++)
@@ -61,6 +61,7 @@ Gameboard::Gameboard()
         	event_positions[count] = TREASURE;
         }
     }
+    /// Initializing the treasure type vector
     for(int count = 0;count < num_treasures;count++)
     {
         if(count < 4)
@@ -142,6 +143,12 @@ void Gameboard::set_event_positions(vector<int> positions)
 {
     event_positions = positions;
 }
+
+void Gameboard::remove_event_position(int player_position)
+{
+	event_positions[player_position] = SPACE;
+}
+
 /// For now, I won't implement this function. I'll just have the gameboard have a set size.
 /*
 void Gameboard::create_gameboard(Gameboard &Board)
@@ -269,25 +276,37 @@ void Player::stat_raise(Treasure& Buff,TreasureType type_stat_raise)
     if(type_stat_raise == ATTACK)
     {
         attack += Buff.get_attack_r();
+        cout << "Treasure chest found! Attack is increased by " << Buff.get_attack_r() << '\n';
     }
     else if(type_stat_raise == DEFENSE)
     {
         defense += Buff.get_defense_r();
+        cout << "Treasure chest found! Defense is increased by " << Buff.get_defense_r() << '\n';
     }
     else if(type_stat_raise == HEALTH)
     {
         total_health += Buff.get_total_health_r();
         current_health += Buff.get_total_health_r();
+        cout << "Treasure chest found! Total health is increased by " << Buff.get_total_health_r() << '\n';
     }
     else
     {
         if((current_health + Buff.get_health_r()) < total_health)
         {
             current_health += Buff.get_health_r();
+            cout << "Potion found! Health is increased by " << Buff.get_health_r() << '\n';
+        }
+        else if(current_health == total_health)
+        {
+            /// Health can't be raised if the two healths are equal, so the health raise is set to 0
+            Buff.set_health_r(0);
+            cout << "Potion found! But health is already full... " << '\n';
         }
         else
         {
-            current_health = total_health;
+            current_health == total_health;
+            Buff.set_health_r(total_health - current_health);
+            cout << "Potion found! Health is increased by " << Buff.get_health_r() << '\n';
         }
     }
 }
@@ -348,6 +367,86 @@ void Treasure::set_attack_r(int raise)
     attack_raise = raise;
 }
 
+/// ************************* //
+/// Monster Member Functions  //
+/// ************************* //
+
+/// Monster Constructors ///
+
+Monster::Monster()
+{
+    attack = 0;
+    defense = 0;
+    current_health = 0;
+    total_health = 0;
+    score_raise = 0;
+    exp_raise = 0;
+}
+
+int Monster::get_attack() const
+{
+    return attack;
+}
+
+int Monster::get_defense() const
+{
+    return defense;
+}
+
+int Monster::get_current_health() const
+{
+    return current_health;
+}
+
+int Monster::get_total_health() const
+{
+    return total_health;
+}
+
+int Monster::get_exp_raise() const
+{
+    return exp_raise;
+}
+
+int Monster::get_score_raise() const
+{
+    return score_raise;
+}
+
+void Monster::set_attack(int new_attack)
+{
+    attack = new_attack;
+}
+
+void Monster::set_defense(int new_defense)
+{
+    defense = new_defense;
+}
+
+void Monster::set_current_health(int new_current_health)
+{
+    current_health = new_current_health;
+}
+
+void Monster::set_total_health(int new_total_health)
+{
+    total_health = new_total_health;
+}
+
+void Monster::set_exp_raise(int new_exp_raise)
+{
+    exp_raise = new_exp_raise;
+}
+
+void Monster::set_score_raise(int new_score_raise)
+{
+    score_raise = new_score_raise;
+}
+
+/// Treasure Member Functions ///
+
+
+
 /// ************************ //
 ///   Function Declarations  //
 /// ************************ //
@@ -394,7 +493,7 @@ int rand_num(int num)
     srand(time(NULL));
     return(rand() % num);
 }
-
+/// I don't use this function, instead I execute this code in th gameboard constructor.
 void initialize_vec(vector<int>& event_positions)
 {
     int ep_length = event_positions.size();
@@ -424,9 +523,8 @@ void game_start(Gameboard& Board, Player& Adventurer)
     /// Initialize a integer vector that have the value of the event position vector, and will be sued to shuffle the event positions. The event positions vector
     /// will then be assigned the value of this temporary vector
     vector<int> positions = Board.get_event_positions();
-	random_shuffle(positions.begin() + 1,positions.end() - 1);
+	random_shuffle(positions.begin() + 1,positions.end());
 	display_board(Board.get_board(),Adventurer.get_position());
-	///display_board(positions);
 	Board.set_event_positions(positions);
 	display_stats(Adventurer);
 }
@@ -439,6 +537,34 @@ void display_stats(Player& Adventurer)
          << "Defense: " << setw(5) << Adventurer.get_defense() << endl
          << "Experience: " << Adventurer.get_current_exp() << "/" << Adventurer.get_total_exp();
 }
+
+void display_stats(Monster& Mob, Enemy monster_type)
+{
+    /// Add another message for all these,
+    /// In other words, fix up the
+    /// presentation of the combat
+    if(monster_type == BAT)
+    {
+        cout << "Bat";
+    }
+    else if(monster_type == GOBLIN)
+    {
+        cout << "Goblin";
+    }
+    else if(monster_type == SKELETON)
+    {
+        cout << "Skeleton";
+    }
+    else
+    {
+        cout << "Zombie";
+    }
+    cout << endl;
+    cout << "Health: " << setw(6) << Adventurer.get_current_health() << "/" << Adventurer.get_total_health() << endl
+         << "Attack: " << setw(6) << Adventurer.get_attack() << endl
+         << "Defense: " << setw(5) << Adventurer.get_defense() << endl;
+}
+
 
 void movement(Player& Adventurer)
 {
@@ -506,4 +632,49 @@ TreasureType initialize_treasure(Treasure& Buff,vector<TreasureType> treasure_ty
         Buff.set_health_r(5+rand_num(5));
         return POTION;
     }
+}
+
+void initialize_monster(Monster& Mob, int level)
+{
+    level += MONSTER_BASE_STAT;
+    Mob.set_attack(MONSTER_BASE_STAT + rand_num(6));
+    Mob.set_defense(MONSTER_BASE_STAT + rand_num(4));
+    int ex_health = rand_num(5);
+    Mob.set_current_health(10 + ex_health);
+    Mob.set_total_health(10 + ex_health);
+    Mob.set_exp_raise(5 + rand_num(3));
+}
+
+/// This returns a bool because either the player
+/// dies or the enemy does
+bool combat(Monster& Mob, Player& Adventurer/*,Enemy*/)
+{
+    int enemy_health = Mob.current_health();
+    int player_health = Adventurer.current_health();
+    if(enemy_health == 0)
+    {
+        /// Message
+        Adventurer.set_current_exp(Mob.get_exp_raise())
+        return true;
+    }
+    else if(player_health == 0)
+    {
+        /// Message
+        return false;
+    }
+    else
+    {
+        /// Correctly write the player and monster display stat functions.
+        display_stats()
+        display player stats
+        /// Call damage done twice, store it in a variable, set it too the current health.
+        Mob.set_current_health(Mob.get_current_health() - damage_done());
+        cin.get();
+        combat(Mob,Adventurer);
+    }
+}
+
+int damage_done(int attack, int defense);
+{
+    return(((2 * attack)/defense + 1) + 1);
 }
