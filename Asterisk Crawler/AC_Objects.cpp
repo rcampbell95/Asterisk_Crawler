@@ -7,7 +7,6 @@
 #define INITIAL_TREASURES 5
 #define INITIAL_SPACES 10
 #define INITIAL_MONSTERS 8
-#define MONSTER_BASE_STAT 5
 
 ///*******************///
 ///    Dependencies   ///
@@ -39,7 +38,6 @@ Gameboard::Gameboard()
     board_layout = "|*";
     gameboard.resize(INITIAL_GAMEBOARD_SIZE);
     event_positions.resize(INITIAL_GAMEBOARD_SIZE);
-    treasure_type.resize(num_treasures);
     for(int count = 0;count < gameboard.size();count++)
     {
         gameboard[count] = board_layout;
@@ -62,13 +60,6 @@ Gameboard::Gameboard()
         }
     }
     /// Initializing the treasure type vector
-    for(int count = 0;count < num_treasures;count++)
-    {
-        if(count < 4)
-            treasure_type[count] = static_cast<TreasureType>(count);
-        else
-            treasure_type[count] = POTION;
-    }
     event_positions[ep_length-1] = EXIT;
 }
 
@@ -127,11 +118,6 @@ vector<string> Gameboard::get_board() const
 vector<int> Gameboard::get_event_positions() const
 {
     return event_positions;
-}
-
-vector<TreasureType> Gameboard::get_treasure_type() const
-{
-    return treasure_type;
 }
 
 void Gameboard::set_layout(string layout)
@@ -560,9 +546,9 @@ void display_stats(Monster& Mob, Enemy monster_type)
         cout << "Zombie";
     }
     cout << endl;
-    cout << "Health: " << setw(6) << Adventurer.get_current_health() << "/" << Adventurer.get_total_health() << endl
-         << "Attack: " << setw(6) << Adventurer.get_attack() << endl
-         << "Defense: " << setw(5) << Adventurer.get_defense() << endl;
+    cout << "Health: " << setw(6) << Mob.get_current_health() << "/" << Mob.get_total_health() << endl
+         << "Attack: " << setw(6) << Mob.get_attack() << endl
+         << "Defense: " << setw(5) << Mob.get_defense() << endl;
 }
 
 
@@ -571,14 +557,12 @@ void movement(Player& Adventurer)
     static int calls = 0;
     char player_move;
     cout << "\n>> ";
-    if(calls > 0)
-        cin.ignore();
     cin.get(player_move);
     /// Input validation for correct character.
     while((player_move != 'w' && player_move != 's' && player_move != 'a' && player_move != 'd') || check_move(Adventurer.get_position(), player_move))
     {
         cout << "\n>> ";
-        cin.ignore();
+        //cin.ignore();
         cin.get(player_move);
     }
     if(player_move == 'w')
@@ -599,6 +583,7 @@ void movement(Player& Adventurer)
     }
     /// Static variable for the if statement for the first cin.ignore().
     calls++;
+    cin.ignore();
 }
 
 bool check_move(int player_position, char player_move)
@@ -607,10 +592,10 @@ bool check_move(int player_position, char player_move)
            (player_position > 19 && player_move == 's') || (player_position == 24 && player_move == 'd'));
 }
 
-TreasureType initialize_treasure(Treasure& Buff,vector<TreasureType> treasure_type)
+TreasureType initialize_treasure(Treasure& Buff)
 {
-    static int num_treasure_type = 0;
-    TreasureType buff_type = treasure_type[num_treasure_type++];
+    TreasureType buff_type = static_cast<TreasureType>(rand_num(4));
+
     if(buff_type == ATTACK)
     {
         /// Use a define statement for these constants. Call it base stat raise!
@@ -634,47 +619,135 @@ TreasureType initialize_treasure(Treasure& Buff,vector<TreasureType> treasure_ty
     }
 }
 
-void initialize_monster(Monster& Mob, int level)
+Enemy initialize_monster(Monster& Mob, int level)
 {
-    level += MONSTER_BASE_STAT;
-    Mob.set_attack(MONSTER_BASE_STAT + rand_num(6));
-    Mob.set_defense(MONSTER_BASE_STAT + rand_num(4));
-    int ex_health = rand_num(5);
-    Mob.set_current_health(10 + ex_health);
-    Mob.set_total_health(10 + ex_health);
-    Mob.set_exp_raise(5 + rand_num(3));
+    Enemy enemy_type = static_cast<Enemy>(rand_num(3));
+    int enemy_base_defense,
+        enemy_base_attack,
+        enemy_base_health,
+        enemy_base_exp;
+    if(enemy_type == BAT)
+    {
+        const int BAT_BASE_DEFENSE = 2,
+                  BAT_BASE_ATTACK = 2,
+                  BAT_BASE_HEALTH = 4,
+                  BAT_BASE_EXP = 2;
+        enemy_base_attack = BAT_BASE_ATTACK;
+        enemy_base_defense = BAT_BASE_DEFENSE;
+        enemy_base_health = BAT_BASE_HEALTH;
+        enemy_base_exp = BAT_BASE_EXP;
+    }
+    else if(enemy_type == GOBLIN)
+    {
+        const int GOBLIN_BASE_DEFENSE = 2,
+                  GOBLIN_BASE_ATTACK = 4,
+                  GOBLIN_BASE_HEALTH = 5,
+                  GOBLIN_BASE_EXP = 4;
+        enemy_base_attack = GOBLIN_BASE_ATTACK;
+        enemy_base_defense = GOBLIN_BASE_DEFENSE;
+        enemy_base_health = GOBLIN_BASE_HEALTH;
+        enemy_base_exp = GOBLIN_BASE_EXP;
+    }
+    else if(enemy_type == SKELETON)
+    {
+        const int SKELETON_BASE_DEFENSE = 4,
+                  SKELETON_BASE_ATTACK = 2,
+                  SKELETON_BASE_HEALTH = 4,
+                  SKELETON_BASE_EXP = 3;
+        enemy_base_attack = SKELETON_BASE_ATTACK;
+        enemy_base_defense = SKELETON_BASE_DEFENSE;
+        enemy_base_health = SKELETON_BASE_HEALTH;
+        enemy_base_exp = SKELETON_BASE_EXP;
+    }
+    else
+    {
+        const int ZOMBIE_BASE_DEFENSE = 5,
+                  ZOMBIE_BASE_ATTACK = 3,
+                  ZOMBIE_BASE_HEALTH = 6,
+                  ZOMBIE_BASE_EXP = 4;
+        enemy_base_attack = ZOMBIE_BASE_ATTACK;
+        enemy_base_defense = ZOMBIE_BASE_DEFENSE;
+        enemy_base_health = ZOMBIE_BASE_HEALTH;
+        enemy_base_exp = ZOMBIE_BASE_EXP;
+    }
+    Mob.set_attack(enemy_base_attack+ rand_num(level));
+    Mob.set_defense(enemy_base_defense + rand_num(level));
+    int ex_health = rand_num(level);
+    Mob.set_current_health(enemy_base_health + ex_health);
+    Mob.set_total_health(enemy_base_health + ex_health);
+    Mob.set_exp_raise(enemy_base_exp + level);
+    return enemy_type;
 }
 
 /// This returns a bool because either the player
 /// dies or the enemy does
-bool combat(Monster& Mob, Player& Adventurer/*,Enemy*/)
+bool combat(Monster& Mob, Player& Adventurer,Enemy enemy_type)
 {
-    int enemy_health = Mob.current_health();
-    int player_health = Adventurer.current_health();
-    if(enemy_health == 0)
+    int damage;
+    if(Mob.get_current_health() <= 0)
     {
-        /// Message
-        Adventurer.set_current_exp(Mob.get_exp_raise())
+        cout << "The monster has been slain!" << '\n';
+        Adventurer.set_current_exp(Mob.get_exp_raise());
         return true;
     }
-    else if(player_health == 0)
+    else if(Adventurer.get_current_health() <= 0)
     {
-        /// Message
+        cout << "You have been slain...";
         return false;
     }
     else
     {
-        /// Correctly write the player and monster display stat functions.
-        display_stats()
-        display player stats
-        /// Call damage done twice, store it in a variable, set it too the current health.
-        Mob.set_current_health(Mob.get_current_health() - damage_done());
+        cout << "----------" << '\n';
+        display_stats(Mob,enemy_type);
+        cout << "----------" << '\n';
+        display_stats(Adventurer);
+        cout << '\n' << "----------" << '\n';
         cin.get();
-        combat(Mob,Adventurer);
+
+        damage = damage_done(Mob.get_attack(), Adventurer.get_defense());
+        if(enemy_type == BAT)
+        {
+            cout << "The bat did " << damage << " damage!" << endl;
+        }
+        else if(enemy_type == GOBLIN)
+        {
+            cout << "The goblin did " << damage << " damage!" << endl;
+        }
+        else if(enemy_type == SKELETON)
+        {
+            cout << "The skeleton did " << damage << " damage!" << endl;
+        }
+        else
+        {
+            cout << "The zombie did " << damage << " damage!" << endl;
+        }
+        Adventurer.set_current_health(Adventurer.get_current_health() - damage);
+
+        damage = damage_done(Adventurer.get_attack(), Mob.get_defense());
+        if(enemy_type == BAT)
+        {
+            cout << "The bat sustained " << damage << " damage!" << endl;
+        }
+        else if(enemy_type == GOBLIN)
+        {
+            cout << "The goblin sustained " << damage << " damage!" << endl;
+        }
+        else if(enemy_type == SKELETON)
+        {
+            cout << "The skeleton sustained " << damage << " damage!" << endl;
+        }
+        else
+        {
+            cout << "The zombie sustained " << damage << " damage!" << endl;
+        }
+        Mob.set_current_health(Mob.get_current_health() - damage);
+        cin.get();
+
+        return combat(Mob,Adventurer,enemy_type);
     }
 }
 
-int damage_done(int attack, int defense);
+int damage_done(int attack, int defense)
 {
-    return(((2 * attack)/defense + 1) + 1);
+    return(((2 * attack)/defense + 1) + rand_num(2));
 }
