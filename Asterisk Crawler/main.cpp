@@ -17,7 +17,7 @@ int main()
     /// Treasure variable to hold the type of treasure ///
     TreasureType temp_treasure;
     Enemy enemy_type;
-    int level = 1;
+    int floor = 1;
     bool player_alive = true;
     game_start(Board, Adventurer);
     vector<int> event_position_cpy = Board.get_event_positions();
@@ -33,21 +33,23 @@ int main()
 
         else if(Board.get_event_positions()[Adventurer.get_position()] == MONSTER)
         {
-            enemy_type = initialize_monster(Mob, level);
-            //cout << '|' << player_alive << '|';
+            enemy_type = initialize_monster(Mob, floor);
             player_alive = combat(Mob, Adventurer, enemy_type);
-            //cout << '|' << player_alive << '|';
             if(player_alive == false)
             {
                 break;
             }
+
             Board.remove_event_position(Adventurer.get_position());
-            /// Need to account for level up
+            if(Adventurer.get_current_exp() > Adventurer.get_total_exp())
+            {
+                level_up(Adventurer);
+            }
         }
         display_board(Board.get_board(),Adventurer.get_position());
         display_stats(Adventurer);
     }
-    level += 1;
+    floor += 1;
     if(player_alive == false)
     {
         //cout << "You have been slain...";

@@ -7,6 +7,7 @@
 #define INITIAL_TREASURES 5
 #define INITIAL_SPACES 10
 #define INITIAL_MONSTERS 8
+#define PLAYER_BASE_STAT 10
 
 ///*******************///
 ///    Dependencies   ///
@@ -135,6 +136,13 @@ void Gameboard::remove_event_position(int player_position)
 	event_positions[player_position] = SPACE;
 }
 
+void Gameboard::new_level_gameboard(int floor, int player_position)
+{
+
+    random_shuffle(event_positions.begin(),event_positions.begin() + player_position - 1;
+    random_shuffle(event_positions)
+}
+
 /// For now, I won't implement this function. I'll just have the gameboard have a set size.
 /*
 void Gameboard::create_gameboard(Gameboard &Board)
@@ -165,14 +173,15 @@ void Gameboard::create_gameboard(Gameboard &Board)
 
 Player::Player()
 {
-    set_attack(10 + rand_num(6));
-    int ex_health = rand_num(5);
-    set_current_health(10 + ex_health);
-    set_total_health(10 + ex_health);
-    set_defense(10 + rand_num(4));
+    set_attack(PLAYER_BASE_STAT + rand_num(3));
+    set_defense(PLAYER_BASE_STAT + rand_num(4));
+    int ex_health = rand_num(4);
+    set_current_health(PLAYER_BASE_STAT + ex_health);
+    set_total_health(PLAYER_BASE_STAT + ex_health);
     set_current_exp(0);
-    set_total_exp(20);
+    set_total_exp(10);
     set_position(0);
+    level = 1;
 }
 
 /// Player Member Functions ///
@@ -217,6 +226,11 @@ int Player::get_total_exp() const
     return total_exp;
 }
 
+int Player::get_level() const
+{
+    return level;
+}
+
 void Player::set_name(string player_name)
 {
     name = player_name;
@@ -257,6 +271,11 @@ void Player::set_position(int player_position)
     position = player_position;
 }
 
+void Player::set_level(int new_level)
+{
+    level = new_level;
+}
+
 void Player::stat_raise(Treasure& Buff,TreasureType type_stat_raise)
 {
     if(type_stat_raise == ATTACK)
@@ -275,7 +294,7 @@ void Player::stat_raise(Treasure& Buff,TreasureType type_stat_raise)
         current_health += Buff.get_total_health_r();
         cout << "Treasure chest found! Total health is increased by " << Buff.get_total_health_r() << '\n';
     }
-    else
+    else if(type_stat_raise == POTION)
     {
         if((current_health + Buff.get_health_r()) < total_health)
         {
@@ -518,6 +537,7 @@ void game_start(Gameboard& Board, Player& Adventurer)
 void display_stats(Player& Adventurer)
 {
     cout << Adventurer.get_name() << endl
+         << "Level: " << setw(7) << Adventurer.get_level() << endl
          << "Health: " << setw(6) << Adventurer.get_current_health() << "/" << Adventurer.get_total_health() << endl
          << "Attack: " << setw(6) << Adventurer.get_attack() << endl
          << "Defense: " << setw(5) << Adventurer.get_defense() << endl
@@ -619,7 +639,7 @@ TreasureType initialize_treasure(Treasure& Buff)
     }
 }
 
-Enemy initialize_monster(Monster& Mob, int level)
+Enemy initialize_monster(Monster& Mob, int floor)
 {
     Enemy enemy_type = static_cast<Enemy>(rand_num(3));
     int enemy_base_defense,
@@ -636,6 +656,7 @@ Enemy initialize_monster(Monster& Mob, int level)
         enemy_base_defense = BAT_BASE_DEFENSE;
         enemy_base_health = BAT_BASE_HEALTH;
         enemy_base_exp = BAT_BASE_EXP;
+        cout << "A bat appeared from the darkness!" << endl;
     }
     else if(enemy_type == GOBLIN)
     {
@@ -647,6 +668,7 @@ Enemy initialize_monster(Monster& Mob, int level)
         enemy_base_defense = GOBLIN_BASE_DEFENSE;
         enemy_base_health = GOBLIN_BASE_HEALTH;
         enemy_base_exp = GOBLIN_BASE_EXP;
+        cout << "A goblin appeared from the darkness!" << endl;
     }
     else if(enemy_type == SKELETON)
     {
@@ -658,6 +680,7 @@ Enemy initialize_monster(Monster& Mob, int level)
         enemy_base_defense = SKELETON_BASE_DEFENSE;
         enemy_base_health = SKELETON_BASE_HEALTH;
         enemy_base_exp = SKELETON_BASE_EXP;
+        cout << "A skeleton appeared from the darkness!" << endl;
     }
     else
     {
@@ -669,13 +692,14 @@ Enemy initialize_monster(Monster& Mob, int level)
         enemy_base_defense = ZOMBIE_BASE_DEFENSE;
         enemy_base_health = ZOMBIE_BASE_HEALTH;
         enemy_base_exp = ZOMBIE_BASE_EXP;
+        cout << "A zombie appeared from the darkness!" << endl;
     }
-    Mob.set_attack(enemy_base_attack+ rand_num(level));
-    Mob.set_defense(enemy_base_defense + rand_num(level));
-    int ex_health = rand_num(level);
+    Mob.set_attack(enemy_base_attack+ rand_num(floor));
+    Mob.set_defense(enemy_base_defense + rand_num(floor));
+    int ex_health = rand_num(floor);
     Mob.set_current_health(enemy_base_health + ex_health);
     Mob.set_total_health(enemy_base_health + ex_health);
-    Mob.set_exp_raise(enemy_base_exp + level);
+    Mob.set_exp_raise(enemy_base_exp + floor);
     return enemy_type;
 }
 
@@ -684,16 +708,16 @@ Enemy initialize_monster(Monster& Mob, int level)
 bool combat(Monster& Mob, Player& Adventurer,Enemy enemy_type)
 {
     int damage;
-    if(Mob.get_current_health() <= 0)
-    {
-        cout << "The monster has been slain!" << '\n';
-        Adventurer.set_current_exp(Mob.get_exp_raise());
-        return true;
-    }
-    else if(Adventurer.get_current_health() <= 0)
+    if(Adventurer.get_current_health() <= 0)
     {
         cout << "You have been slain...";
         return false;
+    }
+    else if(Mob.get_current_health() <= 0)
+    {
+        cout << "The monster has been slain!" << '\n';
+        Adventurer.set_current_exp(Adventurer.get_current_exp() + Mob.get_exp_raise());
+        return true;
     }
     else
     {
@@ -750,4 +774,15 @@ bool combat(Monster& Mob, Player& Adventurer,Enemy enemy_type)
 int damage_done(int attack, int defense)
 {
     return(((2 * attack)/defense + 1) + rand_num(2));
+}
+
+void level_up(Player& Adventurer)
+{
+    int prev_experience = Adventurer.get_total_exp();
+    Adventurer.set_level(Adventurer.get_level() + 1);
+    Adventurer.set_total_exp(Adventurer.get_total_exp() + Adventurer.get_total_exp() / 3);
+    Adventurer.set_current_exp(Adventurer.get_current_exp() - prev_experience);
+    Adventurer.set_current_health(Adventurer.get_current_health() + (Adventurer.get_total_health() - Adventurer.get_current_health())/2);
+    Adventurer.set_attack(Adventurer.get_attack() + Adventurer.get_attack()/6);
+    Adventurer.set_defense(Adventurer.get_defense() + Adventurer.get_defense()/6);
 }

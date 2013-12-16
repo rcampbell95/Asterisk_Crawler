@@ -37,3 +37,25 @@
 	<iomanip>
 	"AC_Functions.h"
 
+1387055943 source:c:\documents and settings\robert\desktop\dungeon_crawler\asterisk crawler\ac_objects.cpp
+	<iostream>
+	<vector>
+	<string>
+	<cstdlib>
+	<time.h>
+	<algorithm>
+	<iomanip>
+	"AC_Functions.h"
+
+1387060579 c:\documents and settings\robert\desktop\dungeon_crawler\asterisk crawler\ac_functions.h
+	<string>
+	<vector>
+
+1387060792 source:c:\documents and settings\robert\desktop\dungeon_crawler\asterisk crawler\main.cpp
+	<iostream>
+	<vector>
+	<cstdlib>
+	<time.h>
+	<algorithm>
+	"AC_Functions.h"
+

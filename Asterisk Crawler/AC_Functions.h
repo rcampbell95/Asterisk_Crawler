@@ -55,6 +55,7 @@ public:
     void set_n_monsters(int);
     void set_event_positions(vector<int>);
     void remove_event_position(int);
+    void new_level_gameboard(int);
     /// You can make the gameboard a constant for now and later implement the function correctly.
     ///void create_gameboard(Gameboard&);
 };
@@ -91,6 +92,7 @@ class Player
             int score;
             int current_exp;
             int total_exp;
+            int level;
         public:
             Player();
             string get_name() const;
@@ -101,6 +103,7 @@ class Player
             int get_position() const;
             int get_current_exp() const;
             int get_total_exp() const;
+            int get_level() const;
             void set_name(string);
             void set_current_health(int);
             void set_total_health(int);
@@ -109,6 +112,7 @@ class Player
             void set_position(int);
             void set_current_exp(int);
             void set_total_exp(int);
+            void set_level(int);
             void stat_raise(Treasure&,TreasureType);
 };
 
@@ -176,7 +180,7 @@ bool combat(Monster&, Player&,Enemy);
 
 int damage_done(int, int);
 
-///void remove_event_position(Gameboard&,int);
+void level_up(Player&);
 
 ///void calc_board_perc(Gameboard&);
 
