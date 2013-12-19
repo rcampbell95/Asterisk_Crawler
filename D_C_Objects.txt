@@ -180,3 +180,19 @@ display player stats
 Mob.set_current_health(Mob.get_current_health() - damage_done())
 cin.get();
 }
+
+player_pos = Adventurer.get_position();
+positions = Board.get_event_positions();
+if(positions.begin() > player_pos - 1)
+{
+	random_shuffle(positions.begin() - 1, positions.end())
+}
+else if(player_pos + 1 > positions.end())
+{
+	random_shuffle(positions.begin(),positions.end() - 1)
+}
+else
+{
+	random_shuffle(positions.begin(),positions.begin() + player_pos - 1)
+	random_shuffle(positions.begin() + player_pos + 1, positions.end())
+}
