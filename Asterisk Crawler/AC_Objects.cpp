@@ -528,10 +528,10 @@ void game_start(Gameboard& Board, Player& Adventurer)
     /// Initialize a integer vector that have the value of the event position vector, and will be sued to shuffle the event positions. The event positions vector
     /// will then be assigned the value of this temporary vector
     vector<int> positions = Board.get_event_positions();
-	random_shuffle(positions.begin() + 1,positions.end());
-	display_board(Board.get_board(),Adventurer.get_position());
-	Board.set_event_positions(positions);
-	display_stats(Adventurer);
+    random_shuffle(positions.begin() + 1,positions.end());
+    display_board(Board.get_board(),Adventurer.get_position());
+    Board.set_event_positions(positions);
+    display_stats(Adventurer);
 }
 
 void display_stats(Player& Adventurer)
