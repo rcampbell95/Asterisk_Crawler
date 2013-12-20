@@ -534,6 +534,27 @@ void game_start(Gameboard& Board, Player& Adventurer)
     display_stats(Adventurer);
 }
 
+void new_floor(Gameboard& Board, Player& Adventurer)
+{
+    player_position = Adventurer.get_position();
+    vector<int> positions = Board.get_event_positions();
+    vector<int>::iterator beginning = positions.begin(),
+                          ending    = positions.end();
+    if(beginning > beginning + player_position - 1)
+    {
+        random_shuffle(beginning - 1, ending);
+    }
+    else if(beginning + player_position + 1 > ending)
+    {
+        random_shuffle(beginning, ending - 1);
+    }
+    else
+    {
+        random_shuffle(beginning, beginning + player_position - 1);
+        random_shuffle(beginning + player_position + 1, ending);
+    }
+}
+
 void display_stats(Player& Adventurer)
 {
     cout << Adventurer.get_name() << endl

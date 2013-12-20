@@ -182,6 +182,8 @@ int damage_done(int, int);
 
 void level_up(Player&);
 
+void new_floor(Gameboard&,Player&);
+
 ///void calc_board_perc(Gameboard&);
 
 #endif // AC_FUNCTIONS_H_INCLUDED
