@@ -20,46 +20,43 @@ int main()
     int floor = 1;
     bool player_alive = true;
     game_start(Board, Adventurer);
-    vector<int> event_position_cpy = Board.get_event_positions();
-    while(event_position_cpy[Adventurer.get_position()] != EXIT)
+    Board.new_level_gameboard(floor,Adventurer.get_position());
+    while(player_alive == true)
     {
+        display_board(Board.get_board(),Adventurer.get_position());
+        display_stats(Adventurer, floor);
         movement(Adventurer);
-        if(Board.get_event_positions()[Adventurer.get_position()] == TREASURE)
+        int player_position = Adventurer.get_position();
+        if(Board.get_event_positions()[player_position] == TREASURE)
         {
             temp_treasure = initialize_treasure(Buff);
             Adventurer.stat_raise(Buff,temp_treasure);
-            Board.remove_event_position(Adventurer.get_position());
+            Board.remove_event_position(player_position);
         }
 
-        else if(Board.get_event_positions()[Adventurer.get_position()] == MONSTER)
+        else if(Board.get_event_positions()[player_position] == MONSTER)
         {
             enemy_type = initialize_monster(Mob, floor);
-            player_alive = combat(Mob, Adventurer, enemy_type);
+            player_alive = combat(Mob, Adventurer, enemy_type, floor);
             if(player_alive == false)
             {
                 break;
             }
 
-            Board.remove_event_position(Adventurer.get_position());
+            Board.remove_event_position(player_position);
             if(Adventurer.get_current_exp() > Adventurer.get_total_exp())
             {
                 level_up(Adventurer);
             }
         }
-        display_board(Board.get_board(),Adventurer.get_position());
-        display_stats(Adventurer);
+        else if(Board.get_event_positions()[player_position] == EXIT)
+        {
+            floor += 1;
+            Board.new_level_gameboard(floor,player_position);
+            /// You may want to make this part of some game_end function, like highscore, saving, other stuff.
+            cout << '\n' << "The exit! Steeling yourself, you ascend the stairs..." << '\n';
+        }
     }
-    floor += 1;
-    if(player_alive == false)
-    {
-        //cout << "You have been slain...";
-    }
-    /// You may want to make this part of some game_end function, like highscore, saving, other stuff.
-    else
-    {
-        cout << '\n' << "The exit! Steeling yourself, you ascend the stairs..." << '\n';
-    }
-    //cout << '|' << Adventurer.get_current_health() << '|' << Mob.get_current_health() << '|' << Adventurer.get_current_exp() << '|';
     ///for(int count = 0;count < )
     ///int board_size = 5;
     ///string board_pattern = "|*|*|*|*|*|";

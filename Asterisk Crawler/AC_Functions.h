@@ -40,6 +40,7 @@ private:
     vector<string> gameboard;
     /// Could the type of this vector cause any problems? Someting to check into.
     vector<int> event_positions;
+    vector<int> cpy_event_positions;
 public:
     Gameboard(int, int, int, string,int);
     Gameboard();
@@ -49,13 +50,15 @@ public:
     string get_layout() const;
     vector<string> get_board() const;
     vector<int> get_event_positions() const;
+    vector<int> get_cpy_event_positions() const;
     void set_layout(string);
     void set_p_treasures(int);
     void set_p_spaces(int);
     void set_n_monsters(int);
     void set_event_positions(vector<int>);
+    void set_cpy_event_position(vector<int>);
     void remove_event_position(int);
-    void new_level_gameboard(int);
+    void new_level_gameboard(int,int);
     /// You can make the gameboard a constant for now and later implement the function correctly.
     ///void create_gameboard(Gameboard&);
 };
@@ -164,7 +167,7 @@ void display_board(vector<string>,int);
 
 void display_board(vector<int>);
 
-void display_stats(Player&);
+void display_stats(Player&, int);
 
 void display_stats(Monster&/*,Enemy*/);
 
@@ -176,13 +179,11 @@ TreasureType initialize_treasure(Treasure&);
 
 Enemy initialize_monster(Monster&, int);
 
-bool combat(Monster&, Player&,Enemy);
+bool combat(Monster&, Player&,Enemy, int);
 
 int damage_done(int, int);
 
 void level_up(Player&);
-
-void new_floor(Gameboard&,Player&);
 
 ///void calc_board_perc(Gameboard&);
 

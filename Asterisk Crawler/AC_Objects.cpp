@@ -62,6 +62,7 @@ Gameboard::Gameboard()
     }
     /// Initializing the treasure type vector
     event_positions[ep_length-1] = EXIT;
+    cpy_event_positions = event_positions;
 }
 
 Gameboard::Gameboard(int treasures, int spaces, int monsters, string layout, int gameboard_size)
@@ -138,9 +139,27 @@ void Gameboard::remove_event_position(int player_position)
 
 void Gameboard::new_level_gameboard(int floor, int player_position)
 {
-
-    random_shuffle(event_positions.begin(),event_positions.begin() + player_position - 1;
-    random_shuffle(event_positions)
+    event_positions = cpy_event_positions;
+    vector<int> positions = event_positions;
+    random_shuffle(positions.begin(),positions.end());
+    /*
+    vector<int>::iterator beginning = positions.begin(),
+                          ending    = positions.end();
+    if(beginning > beginning + player_position - 1)
+    {
+        random_shuffle(beginning - 1, ending);
+    }
+    else if(beginning + player_position + 1 > ending)
+    {
+        random_shuffle(beginning, ending - 1);
+    }
+    else
+    {
+        random_shuffle(beginning, beginning + player_position - 1);
+        random_shuffle(beginning + player_position + 1, ending);
+    }
+    */
+    event_positions = positions;
 }
 
 /// For now, I won't implement this function. I'll just have the gameboard have a set size.
@@ -309,8 +328,8 @@ void Player::stat_raise(Treasure& Buff,TreasureType type_stat_raise)
         }
         else
         {
-            current_health == total_health;
             Buff.set_health_r(total_health - current_health);
+            current_health = total_health;
             cout << "Potion found! Health is increased by " << Buff.get_health_r() << '\n';
         }
     }
@@ -527,37 +546,19 @@ void game_start(Gameboard& Board, Player& Adventurer)
     Adventurer.set_name(player_name);
     /// Initialize a integer vector that have the value of the event position vector, and will be sued to shuffle the event positions. The event positions vector
     /// will then be assigned the value of this temporary vector
+    /*
     vector<int> positions = Board.get_event_positions();
     random_shuffle(positions.begin() + 1,positions.end());
     display_board(Board.get_board(),Adventurer.get_position());
     Board.set_event_positions(positions);
     display_stats(Adventurer);
+    */
 }
 
-void new_floor(Gameboard& Board, Player& Adventurer)
-{
-    player_position = Adventurer.get_position();
-    vector<int> positions = Board.get_event_positions();
-    vector<int>::iterator beginning = positions.begin(),
-                          ending    = positions.end();
-    if(beginning > beginning + player_position - 1)
-    {
-        random_shuffle(beginning - 1, ending);
-    }
-    else if(beginning + player_position + 1 > ending)
-    {
-        random_shuffle(beginning, ending - 1);
-    }
-    else
-    {
-        random_shuffle(beginning, beginning + player_position - 1);
-        random_shuffle(beginning + player_position + 1, ending);
-    }
-}
-
-void display_stats(Player& Adventurer)
+void display_stats(Player& Adventurer, int floor)
 {
     cout << Adventurer.get_name() << endl
+         << "Floor: " << setw(7) << floor << endl
          << "Level: " << setw(7) << Adventurer.get_level() << endl
          << "Health: " << setw(6) << Adventurer.get_current_health() << "/" << Adventurer.get_total_health() << endl
          << "Attack: " << setw(6) << Adventurer.get_attack() << endl
@@ -669,9 +670,9 @@ Enemy initialize_monster(Monster& Mob, int floor)
         enemy_base_exp;
     if(enemy_type == BAT)
     {
-        const int BAT_BASE_DEFENSE = 2,
-                  BAT_BASE_ATTACK = 2,
-                  BAT_BASE_HEALTH = 4,
+        const int BAT_BASE_DEFENSE = 3,
+                  BAT_BASE_ATTACK = 3,
+                  BAT_BASE_HEALTH = 5,
                   BAT_BASE_EXP = 2;
         enemy_base_attack = BAT_BASE_ATTACK;
         enemy_base_defense = BAT_BASE_DEFENSE;
@@ -681,9 +682,9 @@ Enemy initialize_monster(Monster& Mob, int floor)
     }
     else if(enemy_type == GOBLIN)
     {
-        const int GOBLIN_BASE_DEFENSE = 2,
-                  GOBLIN_BASE_ATTACK = 4,
-                  GOBLIN_BASE_HEALTH = 5,
+        const int GOBLIN_BASE_DEFENSE = 3,
+                  GOBLIN_BASE_ATTACK = 5,
+                  GOBLIN_BASE_HEALTH = 6,
                   GOBLIN_BASE_EXP = 4;
         enemy_base_attack = GOBLIN_BASE_ATTACK;
         enemy_base_defense = GOBLIN_BASE_DEFENSE;
@@ -693,9 +694,9 @@ Enemy initialize_monster(Monster& Mob, int floor)
     }
     else if(enemy_type == SKELETON)
     {
-        const int SKELETON_BASE_DEFENSE = 4,
-                  SKELETON_BASE_ATTACK = 2,
-                  SKELETON_BASE_HEALTH = 4,
+        const int SKELETON_BASE_DEFENSE = 5,
+                  SKELETON_BASE_ATTACK = 3,
+                  SKELETON_BASE_HEALTH = 5,
                   SKELETON_BASE_EXP = 3;
         enemy_base_attack = SKELETON_BASE_ATTACK;
         enemy_base_defense = SKELETON_BASE_DEFENSE;
@@ -705,9 +706,9 @@ Enemy initialize_monster(Monster& Mob, int floor)
     }
     else
     {
-        const int ZOMBIE_BASE_DEFENSE = 5,
-                  ZOMBIE_BASE_ATTACK = 3,
-                  ZOMBIE_BASE_HEALTH = 6,
+        const int ZOMBIE_BASE_DEFENSE = 6,
+                  ZOMBIE_BASE_ATTACK = 4,
+                  ZOMBIE_BASE_HEALTH = 7,
                   ZOMBIE_BASE_EXP = 4;
         enemy_base_attack = ZOMBIE_BASE_ATTACK;
         enemy_base_defense = ZOMBIE_BASE_DEFENSE;
@@ -726,7 +727,7 @@ Enemy initialize_monster(Monster& Mob, int floor)
 
 /// This returns a bool because either the player
 /// dies or the enemy does
-bool combat(Monster& Mob, Player& Adventurer,Enemy enemy_type)
+bool combat(Monster& Mob, Player& Adventurer,Enemy enemy_type, int floor)
 {
     int damage;
     if(Adventurer.get_current_health() <= 0)
@@ -745,7 +746,7 @@ bool combat(Monster& Mob, Player& Adventurer,Enemy enemy_type)
         cout << "----------" << '\n';
         display_stats(Mob,enemy_type);
         cout << "----------" << '\n';
-        display_stats(Adventurer);
+        display_stats(Adventurer,floor);
         cout << '\n' << "----------" << '\n';
         cin.get();
 
@@ -788,7 +789,7 @@ bool combat(Monster& Mob, Player& Adventurer,Enemy enemy_type)
         Mob.set_current_health(Mob.get_current_health() - damage);
         cin.get();
 
-        return combat(Mob,Adventurer,enemy_type);
+        return combat(Mob,Adventurer,enemy_type,floor);
     }
 }
 
