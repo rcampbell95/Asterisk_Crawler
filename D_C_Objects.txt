@@ -196,3 +196,22 @@ else
 	random_shuffle(positions.begin(),positions.begin() + player_pos - 1)
 	random_shuffle(positions.begin() + player_pos + 1, positions.end())
 }
+
+struct HighScoreEntry
+{
+     string name;
+     int level,
+         floor,
+         current_health,
+         total_health,
+         attack
+         defense,
+         current_exp,
+         total_exp;
+};
+
+check_if_high_score()
+create_high_score_entry()
+
+head = NULL;
+

@@ -19,7 +19,7 @@
 #include <cstdlib>
 #include <time.h>
 #include <algorithm>
-//#include <fstream>
+#include <fstream>
 #include <iomanip>
 #include "AC_Functions.h"
 
@@ -137,28 +137,11 @@ void Gameboard::remove_event_position(int player_position)
 	event_positions[player_position] = SPACE;
 }
 
-void Gameboard::new_level_gameboard(int floor, int player_position)
+void Gameboard::new_level_gameboard()
 {
     event_positions = cpy_event_positions;
     vector<int> positions = event_positions;
     random_shuffle(positions.begin(),positions.end());
-    /*
-    vector<int>::iterator beginning = positions.begin(),
-                          ending    = positions.end();
-    if(beginning > beginning + player_position - 1)
-    {
-        random_shuffle(beginning - 1, ending);
-    }
-    else if(beginning + player_position + 1 > ending)
-    {
-        random_shuffle(beginning, ending - 1);
-    }
-    else
-    {
-        random_shuffle(beginning, beginning + player_position - 1);
-        random_shuffle(beginning + player_position + 1, ending);
-    }
-    */
     event_positions = positions;
 }
 
@@ -201,6 +184,7 @@ Player::Player()
     set_total_exp(10);
     set_position(0);
     level = 1;
+    floor = 1;
 }
 
 /// Player Member Functions ///
@@ -250,6 +234,11 @@ int Player::get_level() const
     return level;
 }
 
+int Player::get_floor() const
+{
+    return floor;
+}
+
 void Player::set_name(string player_name)
 {
     name = player_name;
@@ -293,6 +282,11 @@ void Player::set_position(int player_position)
 void Player::set_level(int new_level)
 {
     level = new_level;
+}
+
+void Player::set_floor(int new_floor)
+{
+    floor = new_floor;
 }
 
 void Player::stat_raise(Treasure& Buff,TreasureType type_stat_raise)
@@ -555,10 +549,10 @@ void game_start(Gameboard& Board, Player& Adventurer)
     */
 }
 
-void display_stats(Player& Adventurer, int floor)
+void display_stats(Player& Adventurer)
 {
     cout << Adventurer.get_name() << endl
-         << "Floor: " << setw(7) << floor << endl
+         << "Floor: " << setw(7) << Adventurer.get_floor() << endl
          << "Level: " << setw(7) << Adventurer.get_level() << endl
          << "Health: " << setw(6) << Adventurer.get_current_health() << "/" << Adventurer.get_total_health() << endl
          << "Attack: " << setw(6) << Adventurer.get_attack() << endl
@@ -721,7 +715,7 @@ Enemy initialize_monster(Monster& Mob, int floor)
     int ex_health = rand_num(floor);
     Mob.set_current_health(enemy_base_health + ex_health);
     Mob.set_total_health(enemy_base_health + ex_health);
-    Mob.set_exp_raise(enemy_base_exp + floor);
+    Mob.set_exp_raise(enemy_base_exp + floor/3);
     return enemy_type;
 }
 
@@ -732,7 +726,7 @@ bool combat(Monster& Mob, Player& Adventurer,Enemy enemy_type, int floor)
     int damage;
     if(Adventurer.get_current_health() <= 0)
     {
-        cout << "You have been slain...";
+        cout << "You have been slain..." << '\n';
         return false;
     }
     else if(Mob.get_current_health() <= 0)
@@ -746,7 +740,7 @@ bool combat(Monster& Mob, Player& Adventurer,Enemy enemy_type, int floor)
         cout << "----------" << '\n';
         display_stats(Mob,enemy_type);
         cout << "----------" << '\n';
-        display_stats(Adventurer,floor);
+        display_stats(Adventurer);
         cout << '\n' << "----------" << '\n';
         cin.get();
 
@@ -805,6 +799,206 @@ void level_up(Player& Adventurer)
     Adventurer.set_total_exp(Adventurer.get_total_exp() + Adventurer.get_total_exp() / 3);
     Adventurer.set_current_exp(Adventurer.get_current_exp() - prev_experience);
     Adventurer.set_current_health(Adventurer.get_current_health() + (Adventurer.get_total_health() - Adventurer.get_current_health())/2);
-    Adventurer.set_attack(Adventurer.get_attack() + Adventurer.get_attack()/6);
-    Adventurer.set_defense(Adventurer.get_defense() + Adventurer.get_defense()/6);
+    Adventurer.set_attack(Adventurer.get_attack() + Adventurer.get_attack()/10);
+    Adventurer.set_defense(Adventurer.get_defense() + Adventurer.get_defense()/10);
+    cout << "Level up!" << '\n';
+}
+
+HighScoreEntry * create_linked_list(ifstream &input_file,HighScoreEntry * &head)
+{
+    string whitespace;
+    HighScoreEntry * currentnode = NULL;
+    /*
+    if(input_file.fail())
+        {
+            cout << "\nError opening file!";
+            return head = NULL;
+        }
+    */
+    if(head == NULL)
+        {
+            getline(input_file, whitespace);
+        }
+    if(!input_file.eof())
+    {
+        HighScoreEntry * newnode = new HighScoreEntry;
+        currentnode = head;
+        if(head == NULL)
+        {
+            head = newnode;
+        }
+        else
+        {
+            currentnode->next = newnode;
+        }
+        currentnode = newnode;
+        currentnode->next = NULL;
+        input_file >> currentnode->name >> currentnode->floor >> currentnode->level
+                   >> currentnode->total_health
+                   >> currentnode->attack >> currentnode->defense
+                   >> currentnode->current_exp >> currentnode->total_exp;
+        create_linked_list(input_file,currentnode);
+    }
+    return head;
+}
+
+HighScoreEntry* insert_node(HighScoreEntry * &head, HighScoreEntry * newnode)
+{
+    HighScoreEntry * currentnode;
+    HighScoreEntry * previousnode = NULL;
+    if(head == NULL)
+    {
+        head = newnode;
+        return head;
+    }
+    for(currentnode = head;currentnode != NULL;previousnode = currentnode, currentnode = currentnode->next)
+    {
+        if(newnode->floor >= currentnode->floor)
+        {
+            if(previousnode == NULL)
+            {
+                head = newnode;
+                newnode->next = currentnode;
+                return head;
+            }
+            else
+            {
+                newnode->next = currentnode;
+                previousnode->next = newnode;
+                return head;
+            }
+        }
+    }
+    previousnode->next = newnode;
+    return head;
+
+}
+
+void tail_deletion(HighScoreEntry * &head)
+{
+    if(head->next == NULL)
+    {
+        delete head;
+        head = NULL;
+    }
+    else
+    {
+        tail_deletion(head->next);
+    }
+}
+
+void display_list(HighScoreEntry * head)
+{
+    static int num_player = 1;
+    HighScoreEntry * currentnode = head;
+    if(currentnode != NULL)
+    {
+        cout << num_player << ". ";
+        cout << "Player Name: " << setw(11) << currentnode->name << '\n'
+             << "Floor Reached: " << setw(9) << currentnode->floor << '\n'
+             << "Level: " << setw(17) << currentnode->level << '\n'
+             << "Total Health: " << setw(10) << currentnode->total_health << '\n'
+             << "Attack: " << setw(16) << currentnode->attack << '\n'
+             << "Defense: " << setw(15) << currentnode->defense << '\n'
+             << "Current Experience: " << setw(4) << currentnode->current_exp << '\n'
+             << "Experience to Level Up: " << currentnode->total_exp << '\n';
+        cout << '\n';
+        num_player++;
+        display_list(currentnode->next);
+    }
+}
+
+
+bool check_if_high_score(HighScoreEntry * head)
+{
+    HighScoreEntry * currentnode;
+    int num_nodes = 0;
+    for(currentnode = head;currentnode != NULL;currentnode = currentnode->next)
+    {
+        num_nodes++;
+    }
+    if(num_nodes >= 5)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void initialize_newnode(Player &Adventurer, HighScoreEntry * &newnode)
+{
+    newnode->attack = Adventurer.get_attack();
+    newnode->current_exp = Adventurer.get_current_exp();
+    newnode->defense = Adventurer.get_defense();
+    newnode->floor = Adventurer.get_floor();
+    newnode->level = Adventurer.get_level();
+    newnode->name = Adventurer.get_name();
+    newnode->total_exp = Adventurer.get_total_exp();
+    newnode->total_health = Adventurer.get_total_health();
+    newnode->next = NULL;
+}
+
+void create_high_score_entry(HighScoreEntry * &head,Player &Adventurer)
+{
+    ifstream input_file;
+    HighScoreEntry * currentnode = NULL;
+    HighScoreEntry * previousnode = NULL;
+    HighScoreEntry * newnode = new HighScoreEntry;
+    input_file.open("highscores.txt");
+    head = create_linked_list(input_file,head);
+    initialize_newnode(Adventurer,newnode);
+    head = insert_node(head,newnode);
+    if(check_if_high_score(head))
+    {
+        tail_deletion(head);
+    }
+    cout <<  "--------------------Highscores--------------------" << '\n';
+    display_list(head);
+    input_file.close();
+    ofstream output_file;
+    output_file.open("highscores.txt",ios::trunc);
+    for(currentnode = head;currentnode != NULL;currentnode = currentnode->next,delete previousnode,previousnode = NULL)
+    {
+        output_file << " " << '\n'
+                    << currentnode->name << '\n'
+                    << currentnode->floor << '\n'
+                    << currentnode->level << '\n'
+                    << currentnode->total_health << '\n'
+                    << currentnode->attack << '\n'
+                    << currentnode->defense << '\n'
+                    << currentnode->current_exp << '\n'
+                    << currentnode->total_exp;
+        previousnode = currentnode;
+    }
+    output_file.close();
+}
+
+GameState play_again(GameState game_continue)
+{
+    int player_choice = 0;
+    cout << "Your vision fading fast, you wonder if you can continue..." << '\n'
+         << "Continue forward or will you try again? " << "1. Continue Forward 2. Try Again 3. Let Death Consume me"
+         << '\n' << ">> ";
+    cin >> player_choice;
+    cin.ignore();
+    while(player_choice != 1 and player_choice != 2 and player_choice != 3)
+    {
+        cout << '\n' << "You must decide soon!" << '\n';
+        cin >> player_choice;
+        cin.ignore();
+    }
+    if(player_choice == 1)
+    {
+        return CONTINUE;
+    }
+    else if(player_choice == 2)
+    {
+        return RESTART;
+    }
+    else
+    {
+        return EXITGAME;
+    }
 }

@@ -26,6 +26,8 @@ enum EventTypes {SPACE, TREASURE, MONSTER,EXIT};
 
 enum Enemy {BAT, ZOMBIE, SKELETON, GOBLIN};
 
+enum GameState {EXITGAME, RESTART, CONTINUE};
+
 /// ************************* //
 ///    Class Declarations     //
 /// ************************* //
@@ -58,7 +60,7 @@ public:
     void set_event_positions(vector<int>);
     void set_cpy_event_position(vector<int>);
     void remove_event_position(int);
-    void new_level_gameboard(int,int);
+    void new_level_gameboard();
     /// You can make the gameboard a constant for now and later implement the function correctly.
     ///void create_gameboard(Gameboard&);
 };
@@ -96,6 +98,7 @@ class Player
             int current_exp;
             int total_exp;
             int level;
+            int floor;
         public:
             Player();
             string get_name() const;
@@ -107,6 +110,7 @@ class Player
             int get_current_exp() const;
             int get_total_exp() const;
             int get_level() const;
+            int get_floor() const;
             void set_name(string);
             void set_current_health(int);
             void set_total_health(int);
@@ -116,6 +120,7 @@ class Player
             void set_current_exp(int);
             void set_total_exp(int);
             void set_level(int);
+            void set_floor(int);
             void stat_raise(Treasure&,TreasureType);
 };
 
@@ -147,12 +152,20 @@ public:
 /// ************************ //
 ///      Structures          //
 ///************************* //
-/*
-struct EnemyStats
-{
 
+struct HighScoreEntry
+{
+    string name;
+    int level,
+        floor,
+        total_health,
+        attack,
+        defense,
+        current_exp,
+        total_exp;
+    HighScoreEntry * next;
 };
-*/
+
 /// ************************* //
 ///    Function Prototypes    //
 /// ************************* //
@@ -167,9 +180,9 @@ void display_board(vector<string>,int);
 
 void display_board(vector<int>);
 
-void display_stats(Player&, int);
+void display_stats(Player&);
 
-void display_stats(Monster&/*,Enemy*/);
+void display_stats(Monster&);
 
 void movement(Player&);
 
@@ -184,6 +197,22 @@ bool combat(Monster&, Player&,Enemy, int);
 int damage_done(int, int);
 
 void level_up(Player&);
+
+HighScoreEntry* create_linked_list(ifstream&,HighScoreEntry*&);
+
+HighScoreEntry* insert_node(HighScoreEntry * &head, HighScoreEntry*);
+
+void tail_deletion(HighScoreEntry*&);
+
+bool check_if_high_score(HighScoreEntry*);
+
+void create_high_score_entry(HighScoreEntry * &head, Player&);
+
+void display_list(HighScoreEntry*);
+
+void initialilze_newnode(Player&, HighScoreEntry*&);
+
+GameState play_again(GameState);
 
 ///void calc_board_perc(Gameboard&);
 
