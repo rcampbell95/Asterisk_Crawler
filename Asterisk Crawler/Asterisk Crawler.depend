@@ -37,7 +37,9 @@
 	<iomanip>
 	"AC_Functions.h"
 
-1388466964 source:c:\documents and settings\robert\desktop\dungeon_crawler\asterisk crawler\ac_objects.cpp
+1388553003 D
+
+1388729056 source:c:\documents and settings\robert\desktop\dungeon_crawler\asterisk crawler\ac_objects.cpp
 	<iostream>
 	<vector>
 	<string>
@@ -48,11 +50,29 @@
 	<iomanip>
 	"AC_Functions.h"
 
-1388466858 c:\documents and settings\robert\desktop\dungeon_crawler\asterisk crawler\ac_functions.h
+1388554908 a v 1.0.0
+	<iostream>
+	<vector>
+	<string>
+	<cstdlib>
+	<time.h>
+	<algorithm>
+	<fstream>
+	<iomanip>
+	"AC_Functions.h"
+	<iostream>
+	<vector>
+	<cstdlib>
+	<time.h>
+	<algorithm>
+	<fstream>
+	"AC_Functions.h"
+
+1388728027 c:\documents and settings\robert\desktop\dungeon_crawler\asterisk crawler\ac_functions.h
 	<string>
 	<vector>
 
-1388467068 source:c:\documents and settings\robert\desktop\dungeon_crawler\asterisk crawler\main.cpp
+1388730038 source:c:\documents and settings\robert\desktop\dungeon_crawler\asterisk crawler\main.cpp
 	<iostream>
 	<vector>
 	<cstdlib>

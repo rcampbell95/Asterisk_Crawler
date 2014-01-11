@@ -7,7 +7,10 @@
 #define INITIAL_TREASURES 5
 #define INITIAL_SPACES 10
 #define INITIAL_MONSTERS 8
+#define INITIAL_TOTAL_EXP 10
 #define PLAYER_BASE_STAT 10
+#define BASE_BUFF_RAISE 1
+#define BASE_HEALTH_RAISE 5
 
 ///*******************///
 ///    Dependencies   ///
@@ -181,7 +184,7 @@ Player::Player()
     set_current_health(PLAYER_BASE_STAT + ex_health);
     set_total_health(PLAYER_BASE_STAT + ex_health);
     set_current_exp(0);
-    set_total_exp(10);
+    set_total_exp(INITIAL_TOTAL_EXP);
     set_position(0);
     level = 1;
     floor = 1;
@@ -590,7 +593,6 @@ void display_stats(Monster& Mob, Enemy monster_type)
 
 void movement(Player& Adventurer)
 {
-    static int calls = 0;
     char player_move;
     cout << "\n>> ";
     cin.get(player_move);
@@ -618,7 +620,6 @@ void movement(Player& Adventurer)
         Adventurer.set_position(Adventurer.get_position()-1);
     }
     /// Static variable for the if statement for the first cin.ignore().
-    calls++;
     cin.ignore();
 }
 
@@ -635,22 +636,22 @@ TreasureType initialize_treasure(Treasure& Buff)
     if(buff_type == ATTACK)
     {
         /// Use a define statement for these constants. Call it base stat raise!
-        Buff.set_attack_r(1 + rand_num(2));
+        Buff.set_attack_r(BASE_BUFF_RAISE + rand_num(2));
         return ATTACK;
     }
     else if(buff_type == DEFENSE)
     {
-        Buff.set_defense_r(1+rand_num(2));
+        Buff.set_defense_r(BASE_BUFF_RAISE+rand_num(2));
         return DEFENSE;
     }
     else if(buff_type == HEALTH)
     {
-        Buff.set_total_health_r(1+rand_num(2));
+        Buff.set_total_health_r(BASE_BUFF_RAISE+rand_num(2));
         return HEALTH;
     }
     else
     {
-        Buff.set_health_r(5+rand_num(5));
+        Buff.set_health_r(BASE_HEALTH_RAISE+rand_num(5));
         return POTION;
     }
 }
@@ -940,14 +941,11 @@ void initialize_newnode(Player &Adventurer, HighScoreEntry * &newnode)
     newnode->next = NULL;
 }
 
-void create_high_score_entry(HighScoreEntry * &head,Player &Adventurer)
+void create_high_score_entry(HighScoreEntry * &head,Player &Adventurer, ifstream &input_file)
 {
-    ifstream input_file;
     HighScoreEntry * currentnode = NULL;
     HighScoreEntry * previousnode = NULL;
     HighScoreEntry * newnode = new HighScoreEntry;
-    input_file.open("highscores.txt");
-    head = create_linked_list(input_file,head);
     initialize_newnode(Adventurer,newnode);
     head = insert_node(head,newnode);
     if(check_if_high_score(head))
@@ -959,6 +957,7 @@ void create_high_score_entry(HighScoreEntry * &head,Player &Adventurer)
     input_file.close();
     ofstream output_file;
     output_file.open("highscores.txt",ios::trunc);
+    check_file(output_file);
     for(currentnode = head;currentnode != NULL;currentnode = currentnode->next,delete previousnode,previousnode = NULL)
     {
         output_file << " " << '\n'
@@ -977,7 +976,7 @@ void create_high_score_entry(HighScoreEntry * &head,Player &Adventurer)
 
 GameState play_again(GameState game_continue)
 {
-    int player_choice = 0;
+    int player_choice;
     cout << "Your vision fading fast, you wonder if you can continue..." << '\n'
          << "Continue forward or will you try again? " << "1. Continue Forward 2. Try Again 3. Let Death Consume me"
          << '\n' << ">> ";
@@ -989,16 +988,55 @@ GameState play_again(GameState game_continue)
         cin >> player_choice;
         cin.ignore();
     }
-    if(player_choice == 1)
+    switch(player_choice)
     {
+    case 1:
         return CONTINUE;
-    }
-    else if(player_choice == 2)
-    {
+        break;
+    case 2:
         return RESTART;
-    }
-    else
-    {
+        break;
+    case 3:
         return EXITGAME;
+        break;
+    }
+}
+
+void delete_linked_list(HighScoreEntry * &head)
+{
+    HighScoreEntry * currentnode;
+    HighScoreEntry * previousnode = NULL;
+    for(currentnode = head;currentnode != NULL;currentnode = currentnode->next,delete previousnode,previousnode = NULL)
+    {
+        ;
+    }
+}
+
+void reset_player(Player & Adventurer)
+{
+    Adventurer.set_floor(1);
+    Adventurer.set_level(1);
+    Adventurer.set_attack(PLAYER_BASE_STAT + rand_num(3));
+    Adventurer.set_defense(PLAYER_BASE_STAT + rand_num(4));
+    int ex_health = rand_num(4);
+    Adventurer.set_current_health(PLAYER_BASE_STAT + ex_health);
+    Adventurer.set_total_health(PLAYER_BASE_STAT + ex_health);
+    Adventurer.set_current_exp(0);
+    Adventurer.set_total_exp(INITIAL_TOTAL_EXP);
+}
+
+void check_file(ifstream &input_file)
+{
+    if(input_file.fail())
+    {
+        cout << "Error opening file";
+    }
+}
+
+void check_file(ofstream &input_file)
+{
+    if(input_file.fail())
+    {
+        cout << "Error opening file";
     }
 }

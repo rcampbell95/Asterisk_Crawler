@@ -208,11 +208,21 @@ bool check_if_high_score(HighScoreEntry*);
 
 void create_high_score_entry(HighScoreEntry * &head, Player&);
 
+void create_high_score_entry(HighScoreEntry * &head, Player&, ifstream&);
+
 void display_list(HighScoreEntry*);
 
 void initialilze_newnode(Player&, HighScoreEntry*&);
 
 GameState play_again(GameState);
+
+void delete_linked_list(HighScoreEntry *&);
+
+void reset_player(Player&);
+
+void check_file(ifstream&);
+
+void check_file(ofstream&);
 
 ///void calc_board_perc(Gameboard&);
 
