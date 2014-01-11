@@ -63,6 +63,7 @@ int main()
                 cout << '\n' << "The exit! Steeling yourself, you ascend the stairs..." << '\n';
             }
         }
+        /// Game Continue or Restart ///
         game_continue = play_again(game_continue);
         previous_game_continue = game_continue;
         if(game_continue == CONTINUE)
@@ -75,18 +76,19 @@ int main()
             Adventurer.set_current_health(Adventurer.get_total_health());
             Adventurer.set_floor(1);
         }
+        /// ----------------------- ///
     }while(game_continue);
+    /// Highscore Creation and Display ///
     head = create_linked_list(input_file,head);
+    display_list(head);
     if(previous_game_continue != CONTINUE)
     {
         create_high_score_entry(head,Adventurer,input_file);
         display_list(head);
     }
-    else
-    {
-        input_file.close();
-        delete_linked_list(head);
-    }
+    delete_linked_list(head);
+    input_file.close();
+    /// ----------------------------- ///
     cin.get();
     return 0;
 }

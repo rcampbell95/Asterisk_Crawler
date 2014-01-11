@@ -8,7 +8,7 @@
 #define INITIAL_SPACES 10
 #define INITIAL_MONSTERS 8
 #define INITIAL_TOTAL_EXP 10
-#define PLAYER_BASE_STAT 10
+#define PLAYER_BASE_STAT 5
 #define BASE_BUFF_RAISE 1
 #define BASE_HEALTH_RAISE 5
 
@@ -809,17 +809,15 @@ HighScoreEntry * create_linked_list(ifstream &input_file,HighScoreEntry * &head)
 {
     string whitespace;
     HighScoreEntry * currentnode = NULL;
-    /*
     if(input_file.fail())
-        {
-            cout << "\nError opening file!";
-            return head = NULL;
-        }
-    */
+    {
+        cout << "\nError opening file!";
+        return head = NULL;
+    }
     if(head == NULL)
-        {
-            getline(input_file, whitespace);
-        }
+    {
+        getline(input_file, whitespace);
+    }
     if(!input_file.eof())
     {
         HighScoreEntry * newnode = new HighScoreEntry;
@@ -838,6 +836,7 @@ HighScoreEntry * create_linked_list(ifstream &input_file,HighScoreEntry * &head)
                    >> currentnode->total_health
                    >> currentnode->attack >> currentnode->defense
                    >> currentnode->current_exp >> currentnode->total_exp;
+        cout << "I made a node!!" << endl;
         create_linked_list(input_file,currentnode);
     }
     return head;
@@ -872,7 +871,6 @@ HighScoreEntry* insert_node(HighScoreEntry * &head, HighScoreEntry * newnode)
     }
     previousnode->next = newnode;
     return head;
-
 }
 
 void tail_deletion(HighScoreEntry * &head)
