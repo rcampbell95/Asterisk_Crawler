@@ -19,11 +19,15 @@ int main()
     TreasureType temp_treasure;
     Enemy enemy_type;
     bool player_alive = true;
-    GameState game_continue = CONTINUE;
+    GameState game_continue = EXITGAME;
+    GameState previous_game_continue;
+    ifstream input_file;
+    check_file(input_file);
+    input_file.open("highscores.txt");
     HighScoreEntry * head = NULL;
     game_start(Board, Adventurer);
     Board.new_level_gameboard();
-    while(game_continue)
+    do
     {
         while(player_alive)
         {
@@ -60,6 +64,7 @@ int main()
             }
         }
         game_continue = play_again(game_continue);
+        previous_game_continue = game_continue;
         if(game_continue == CONTINUE)
         {
             Adventurer.set_current_health(Adventurer.get_total_health());
@@ -69,20 +74,20 @@ int main()
         {
             Adventurer.set_current_health(Adventurer.get_total_health());
             Adventurer.set_floor(1);
-            player_alive = true;
         }
+    }while(game_continue);
+    head = create_linked_list(input_file,head);
+    if(previous_game_continue != CONTINUE)
+    {
+        create_high_score_entry(head,Adventurer,input_file);
+        display_list(head);
     }
-    create_high_score_entry(head,Adventurer);
-    ///for(int count = 0;count < )
-    ///int board_size = 5;
-    ///string board_pattern = "|*|*|*|*|*|";
-    ///vector<string> gameboard(board_size,board_pattern);
-    ///for(int count = 0;count < gameboard.size();count++)
-    ///{
-    ///    if(count == 0)
-    ///        gameboard[0][1] = '@';
-    ///    cout << gameboard[count] << endl;
-    ///}
+    else
+    {
+        input_file.close();
+        delete_linked_list(head);
+    }
+    cin.get();
     return 0;
 }
 
