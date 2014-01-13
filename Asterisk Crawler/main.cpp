@@ -1,12 +1,14 @@
 #include <iostream>
 #include <vector>
-#include <cstdlib>
 #include <time.h>
 #include <algorithm>
 #include <fstream>
-#include "AC_Functions.h"
 
 using namespace std;
+
+#include <cstdlib>
+
+#include "AC_Functions.h"
 
 int main()
 {
@@ -80,12 +82,12 @@ int main()
     }while(game_continue);
     /// Highscore Creation and Display ///
     head = create_linked_list(input_file,head);
-    display_list(head);
     if(previous_game_continue != CONTINUE)
     {
         create_high_score_entry(head,Adventurer,input_file);
         display_list(head);
     }
+    HighScoreEntry* prev = NULL;
     delete_linked_list(head);
     input_file.close();
     /// ----------------------------- ///

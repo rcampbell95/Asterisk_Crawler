@@ -8,7 +8,7 @@
 #define INITIAL_SPACES 10
 #define INITIAL_MONSTERS 8
 #define INITIAL_TOTAL_EXP 10
-#define PLAYER_BASE_STAT 5
+#define PLAYER_BASE_STAT 3
 #define BASE_BUFF_RAISE 1
 #define BASE_HEALTH_RAISE 5
 
@@ -19,14 +19,16 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <cstdlib>
 #include <time.h>
 #include <algorithm>
 #include <fstream>
 #include <iomanip>
-#include "AC_Functions.h"
 
 using namespace std;
+
+#include <cstdlib>
+
+#include "AC_Functions.h"
 
 /// ************************** //
 /// Gameboard Member Functions //
@@ -939,24 +941,28 @@ void initialize_newnode(Player &Adventurer, HighScoreEntry * &newnode)
     newnode->next = NULL;
 }
 
-void create_high_score_entry(HighScoreEntry * &head,Player &Adventurer, ifstream &input_file)
+void create_high_score_entry(HighScoreEntry* &head,Player &Adventurer, ifstream &input_file)
 {
-    HighScoreEntry * currentnode = NULL;
-    HighScoreEntry * previousnode = NULL;
-    HighScoreEntry * newnode = new HighScoreEntry;
+    HighScoreEntry* currentnode = NULL;
+    HighScoreEntry* previousnode = NULL;
+    HighScoreEntry* newnode = new HighScoreEntry;
     initialize_newnode(Adventurer,newnode);
     head = insert_node(head,newnode);
+    HighScoreEntry* prev = NULL;
+    for(HighScoreEntry* curr = head;curr != NULL;prev = curr,curr = curr->next)
+    {
+        ;
+    }
     if(check_if_high_score(head))
     {
         tail_deletion(head);
     }
     cout <<  "--------------------Highscores--------------------" << '\n';
-    display_list(head);
     input_file.close();
     ofstream output_file;
     output_file.open("highscores.txt",ios::trunc);
     check_file(output_file);
-    for(currentnode = head;currentnode != NULL;currentnode = currentnode->next,delete previousnode,previousnode = NULL)
+    for(currentnode = head;currentnode != NULL;currentnode = currentnode->next)
     {
         output_file << " " << '\n'
                     << currentnode->name << '\n'
@@ -967,7 +973,6 @@ void create_high_score_entry(HighScoreEntry * &head,Player &Adventurer, ifstream
                     << currentnode->defense << '\n'
                     << currentnode->current_exp << '\n'
                     << currentnode->total_exp;
-        previousnode = currentnode;
     }
     output_file.close();
 }
