@@ -8,7 +8,7 @@
 #define INITIAL_SPACES 10
 #define INITIAL_MONSTERS 8
 #define INITIAL_TOTAL_EXP 10
-#define PLAYER_BASE_STAT 3
+#define PLAYER_BASE_STAT 10
 #define BASE_BUFF_RAISE 1
 #define BASE_HEALTH_RAISE 5
 
@@ -838,7 +838,6 @@ HighScoreEntry * create_linked_list(ifstream &input_file,HighScoreEntry * &head)
                    >> currentnode->total_health
                    >> currentnode->attack >> currentnode->defense
                    >> currentnode->current_exp >> currentnode->total_exp;
-        cout << "I made a node!!" << endl;
         create_linked_list(input_file,currentnode);
     }
     return head;
@@ -944,15 +943,9 @@ void initialize_newnode(Player &Adventurer, HighScoreEntry * &newnode)
 void create_high_score_entry(HighScoreEntry* &head,Player &Adventurer, ifstream &input_file)
 {
     HighScoreEntry* currentnode = NULL;
-    HighScoreEntry* previousnode = NULL;
     HighScoreEntry* newnode = new HighScoreEntry;
     initialize_newnode(Adventurer,newnode);
     head = insert_node(head,newnode);
-    HighScoreEntry* prev = NULL;
-    for(HighScoreEntry* curr = head;curr != NULL;prev = curr,curr = curr->next)
-    {
-        ;
-    }
     if(check_if_high_score(head))
     {
         tail_deletion(head);
@@ -979,16 +972,19 @@ void create_high_score_entry(HighScoreEntry* &head,Player &Adventurer, ifstream 
 
 GameState play_again(GameState game_continue)
 {
+    char buffer[20];
     int player_choice;
     cout << "Your vision fading fast, you wonder if you can continue..." << '\n'
          << "Continue forward or will you try again? " << "1. Continue Forward 2. Try Again 3. Let Death Consume me"
          << '\n' << ">> ";
-    cin >> player_choice;
+    cin >> buffer;
+    player_choice = atoi(buffer);
     cin.ignore();
     while(player_choice != 1 and player_choice != 2 and player_choice != 3)
     {
         cout << '\n' << "You must decide soon!" << '\n';
-        cin >> player_choice;
+        cin >> buffer;
+        player_choice = atoi(buffer);
         cin.ignore();
     }
     switch(player_choice)

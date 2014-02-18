@@ -87,41 +87,41 @@ public:
 
 class Player
 {
-		private:
-		    string name;
-            int attack;
-            int defense;
-            int current_health;
-            int total_health;
-            int position;
-            int score;
-            int current_exp;
-            int total_exp;
-            int level;
-            int floor;
-        public:
-            Player();
-            string get_name() const;
-            int get_defense() const;
-            int get_attack() const;
-            int get_current_health() const;
-            int get_total_health() const;
-            int get_position() const;
-            int get_current_exp() const;
-            int get_total_exp() const;
-            int get_level() const;
-            int get_floor() const;
-            void set_name(string);
-            void set_current_health(int);
-            void set_total_health(int);
-            void set_attack(int);
-            void set_defense(int);
-            void set_position(int);
-            void set_current_exp(int);
-            void set_total_exp(int);
-            void set_level(int);
-            void set_floor(int);
-            void stat_raise(Treasure&,TreasureType);
+private:
+    string name;
+    int attack;
+    int defense;
+    int current_health;
+    int total_health;
+    int position;
+    int score;
+    int current_exp;
+    int total_exp;
+    int level;
+    int floor;
+public:
+    Player();
+    string get_name() const;
+    int get_defense() const;
+    int get_attack() const;
+    int get_current_health() const;
+    int get_total_health() const;
+    int get_position() const;
+    int get_current_exp() const;
+    int get_total_exp() const;
+    int get_level() const;
+    int get_floor() const;
+    void set_name(string);
+    void set_current_health(int);
+    void set_total_health(int);
+    void set_attack(int);
+    void set_defense(int);
+    void set_position(int);
+    void set_current_exp(int);
+    void set_total_exp(int);
+    void set_level(int);
+    void set_floor(int);
+    void stat_raise(Treasure&,TreasureType);
 };
 
 class Monster
@@ -163,7 +163,7 @@ struct HighScoreEntry
         defense,
         current_exp,
         total_exp;
-    HighScoreEntry * next;
+    HighScoreEntry *next;
 };
 
 /// ************************* //

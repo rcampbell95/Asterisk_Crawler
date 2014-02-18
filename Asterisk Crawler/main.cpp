@@ -24,7 +24,6 @@ int main()
     GameState game_continue = EXITGAME;
     GameState previous_game_continue;
     ifstream input_file;
-    check_file(input_file);
     input_file.open("highscores.txt");
     HighScoreEntry * head = NULL;
     game_start(Board, Adventurer);
@@ -77,17 +76,19 @@ int main()
         {
             Adventurer.set_current_health(Adventurer.get_total_health());
             Adventurer.set_floor(1);
+            player_alive = true;
         }
+
         /// ----------------------- ///
     }while(game_continue);
     /// Highscore Creation and Display ///
+    check_file(input_file);
     head = create_linked_list(input_file,head);
     if(previous_game_continue != CONTINUE)
     {
         create_high_score_entry(head,Adventurer,input_file);
         display_list(head);
     }
-    HighScoreEntry* prev = NULL;
     delete_linked_list(head);
     input_file.close();
     /// ----------------------------- ///
