@@ -8,7 +8,7 @@ using namespace std;
 
 #include <cstdlib>
 
-#include "AC_Functions.h"
+#include "Functions.h"
 
 int main()
 {
@@ -26,24 +26,24 @@ int main()
   ifstream input_file;
   input_file.open("highscores.txt");
   HighScoreEntry * head = NULL;
-  game_start(Board, Adventurer);
+  game_start(Adventurer);
   Board.new_level_gameboard();
 
   do
   {
   while(player_alive)
   {
-    display_board(Board.get_board(),Adventurer.get_position());
+    display_board(Board.get_event_positions(),Adventurer.get_position());
     display_stats(Adventurer);
     movement(Adventurer);
     int player_position = Adventurer.get_position();
-    if(Board.get_event_positions()[player_position] == TREASURE)
+    if(Board.get_event_positions()[player_position].first == TREASURE)
     {
       temp_treasure = initialize_treasure(Buff);
       Adventurer.stat_raise(Buff,temp_treasure);
       Board.remove_event_position(player_position);
     }
-    else if(Board.get_event_positions()[player_position] == MONSTER)
+    else if(Board.get_event_positions()[player_position].first == MONSTER)
     {
       enemy_type = initialize_monster(Mob, Adventurer.get_floor());
       player_alive = combat(Mob, Adventurer, enemy_type, Adventurer.get_floor());
@@ -58,7 +58,7 @@ int main()
       }
     }
 
-    else if(Board.get_event_positions()[player_position] == EXIT)
+    else if(Board.get_event_positions()[player_position].first == EXIT)
     {
       Adventurer.set_floor(Adventurer.get_floor() + 1);
       Board.new_level_gameboard();
@@ -77,14 +77,13 @@ int main()
     }
     else if(game_continue == RESTART)
     {
-      Adventurer.set_current_health(Adventurer.get_total_health());
-      Adventurer.set_floor(1);
+      reset_player(Adventurer);
       player_alive = true;
     }
   }while(game_continue);
 
   /// Highscore Creation and Display ///
-  check_file(input_file);
+  check_file<ifstream>(input_file);
   head = create_linked_list(input_file,head);
   if(previous_game_continue != CONTINUE)
   {
@@ -95,7 +94,6 @@ int main()
   input_file.close();
   /// ----------------------------- ///
   cin.get();
-  return 0;
 }
 
 
