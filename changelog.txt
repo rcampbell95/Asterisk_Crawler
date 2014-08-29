@@ -1,0 +1,15 @@
+Changelog
+
+1.1.0
+  a) Changed representation of the board from two separate data structures to one. This made it possible to implement another feature as well.
+  b) Implemented detection of monsters and treasures when one tile away. 
+  c) Implemented health bars for both the player and the enemies.
+  d) Added the speed stat. Both player and enemies now have speed, which determines who will land an attack first. Increasing speed, either through level up or items, remains unimplemented.
+  e) Added level up message.
+
+ToDo
+  a) Increasing speed, either through level up or items, remains unimplemented.
+  b) Add speed to highscore print out.
+  
+Bugs
+  a) Game crash?
