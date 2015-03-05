@@ -91,6 +91,18 @@ public:
   int get_defense_r() const      {return defense_raise;}
 };
 
+class Unit
+{
+private:
+  int attack;
+  int defense;
+  int speed;
+  int current_health;
+  int total_health;
+public:
+	Unit();
+};
+
 class Player
 {
 private:

@@ -1,6 +1,3 @@
-#ifndef FUNCTIONS_H
-#define FUNCTIONS_H
-
 ///*******************///
 ///    Constants      ///
 ///*******************///
@@ -27,302 +24,14 @@
 #include <algorithm>
 #include <fstream>
 #include <iomanip>
-#include <map>
+
+#include "unit.h"
+#include "item.h"
+#include "monster.h"
+#include "proto.h"
+#include "player.h"
 
 using namespace std;
-
-#include <cstdlib>
-
-#include "Classes.h"
-
-/// ************************** //
-/// Gameboard Member Functions //
-/// ************************** //
-
-// Gameboard Constructors //
-
-Gameboard::Gameboard()
-{
-  num_treasures = INITIAL_TREASURES;
-  num_spaces = INITIAL_SPACES;
-  num_monsters = INITIAL_MONSTERS;
-  board_layout = "|*";
-  /// Combine these two edit
-
-  event_positions.resize(INITIAL_GAMEBOARD_SIZE);
-
-  int ep_length = event_positions.size();
-  event_positions[0].first = INITIAL_GAMEBOARD_LENGTH;   /// What am I doing here?
-  event_positions[0].second = board_layout;
-  for(int count = 1;count < ep_length;count++)
-  {
-  	if(count < INITIAL_GAMEBOARD_SIZE - 14)
-    {
-      event_positions[count].first = SPACE;
-      event_positions[count].second = board_layout;
-    }
-    else if(count < INITIAL_GAMEBOARD_SIZE - 6)
-    {
-      event_positions[count].first = MONSTER;
-      event_positions[count].second = board_layout;
-    }
-    else if(count < INITIAL_GAMEBOARD_SIZE - 1)
-    {
-      event_positions[count].first = TREASURE;
-    	event_positions[count].second = board_layout;
-    }
-  }
-
-  event_positions[ep_length-1].first = EXIT;
-  event_positions[ep_length-1].second = board_layout;
-  cpy_event_positions = event_positions;
-  /*
-  gameboard.resize(INITIAL_GAMEBOARD_SIZE);
-  event_positions.resize(INITIAL_GAMEBOARD_SIZE);
-  for(int count = 0;count < gameboard.size();count++)
-  {
-    gameboard[count] = board_layout;
-  }
-  int ep_length = event_positions.size();
-  event_positions[0] = INITIAL_GAMEBOARD_LENGTH;
-  for(int count = 1;count < ep_length;count++)
-  {
-  	if(count < INITIAL_GAMEBOARD_SIZE - 14)
-    {
-      event_positions[count] = SPACE;
-    }
-    else if(count < INITIAL_GAMEBOARD_SIZE - 6)
-    {
-      event_positions[count] = MONSTER;
-    }
-    else if(count < INITIAL_GAMEBOARD_SIZE - 1)
-    {
-    	event_positions[count] = TREASURE;
-    }
-  }
-
-  // Initializing the treasure type vector
-  event_positions[ep_length-1] = EXIT;
-  cpy_event_positions = event_positions;
-  */
-  ///
-}
-
-/*
-Gameboard::Gameboard(int treasures, int spaces, int monsters, string layout, int gameboard_size)
-{
-  num_treasures = treasures;
-  num_spaces = spaces;
-  num_monsters = monsters;
-  board_layout = layout;
-  gameboard.resize(gameboard_size);
-  // This would be used for a more dynamic gameboard and more levels.
-  for(int count = 0;count < gameboard_size;count++)
-  {
-    gameboard[count] = board_layout;
-  }
-  gameboard[0][1] = '@';
-}
-*/
-
-// Gameboard Member Functions //
-
-string Gameboard::get_layout() const
-{
-  return board_layout;
-}
-
-vector<pair<int,string> > Gameboard::get_event_positions() const
-{
-  return event_positions;
-}
-
-void Gameboard::set_layout(string layout)
-{
-  board_layout = layout;
-}
-
-void Gameboard::set_event_positions(vector<pair<int,string> > &positions)
-{
-  event_positions = positions;
-}
-
-void Gameboard::remove_event_position(int player_position)
-{
-	event_positions[player_position].first = SPACE;
-  event_positions[player_position].second = board_layout;
-}
-
-void Gameboard::new_level_gameboard()
-{
-  event_positions = cpy_event_positions;
-  vector<pair<int,string> > positions = event_positions;
-  random_shuffle(positions.begin(),positions.end());
-  event_positions = positions;
-}
-
-/// edit
-/*
-string Gameboard::get_layout() const
-{
-  return board_layout;
-}
-
-vector<string> Gameboard::get_board() const
-{
-  return gameboard;
-}
-
-vector<int> Gameboard::get_event_positions() const
-{
-  return event_positions;
-}
-
-void Gameboard::set_layout(string layout)
-{
-  board_layout = layout;
-}
-
-void Gameboard::set_event_positions(vector<int> &positions)
-{
-  event_positions = positions;
-}
-
-void Gameboard::remove_event_position(int player_position)
-{
-	event_positions[player_position] = SPACE;
-}
-
-void Gameboard::new_level_gameboard()
-{
-  event_positions = cpy_event_positions;
-  vector<int> positions = event_positions;
-  random_shuffle(positions.begin(),positions.end());
-  event_positions = positions;
-}
-*/
-///
-
-/// For now, I won't implement this function. I'll just have the gameboard have a set size.
-/*
-void Gameboard::create_gameboard(Gameboard &Board)
-{
-  int g_size = (Board.gameboard).size() * 5;
-  string row = "";
-  for(int count = 0;count < g_size;count++)
-  {
-  	row = row + Board.board_layout;
-  	if(((count + 1) % 5) == 0)
-  	{
-  	  cout << row << endl;
-  	  /// There's a problem with this line of code, or at least I think the
-  	  /// problem lies in this line. The vector of string doesn't get initialized
-  	  /// correctly.
-  		(Board.gameboard).push_back(row);
-  		row = "";
-  	}
-  }
-}
-*/
-
-/// *********************** //
-/// Player Member Functions //
-/// *********************** //
-
-/// Player Constructors ///
-
-Player::Player()
-{
-  set_attack(PLAYER_BASE_STAT + rand_num(3));
-  set_defense(PLAYER_BASE_STAT + rand_num(4));
-  set_speed(PLAYER_BASE_SPEED);
-  int ex_health = rand_num(4);
-  set_current_health(PLAYER_BASE_STAT + ex_health);
-  set_total_health(PLAYER_BASE_STAT + ex_health);
-  set_current_exp(0);
-  set_total_exp(INITIAL_TOTAL_EXP);
-  set_position(0);
-  level = 1;
-  floor = 1;
-}
-
-/// Player Member Functions ///
-
-void Player::stat_raise(Treasure& Buff,TreasureType type_stat_raise)
-{
-  if(type_stat_raise == ATTACK)
-  {
-    attack += Buff.get_attack_r();
-    cout << "Treasure chest found! Attack is increased by " << Buff.get_attack_r() << '\n';
-  }
-  else if(type_stat_raise == DEFENSE)
-  {
-    defense += Buff.get_defense_r();
-    cout << "Treasure chest found! Defense is increased by " << Buff.get_defense_r() << '\n';
-  }
-  else if(type_stat_raise == HEALTH)
-  {
-    total_health += Buff.get_total_health_r();
-    current_health += Buff.get_total_health_r();
-    cout << "Treasure chest found! Total health is increased by " << Buff.get_total_health_r() << '\n';
-  }
-  else if(type_stat_raise == POTION)
-  {
-    if((current_health + Buff.get_health_r()) < total_health)
-    {
-      current_health += Buff.get_health_r();
-      cout << "Potion found! Health is increased by " << Buff.get_health_r() << '\n';
-    }
-    else if(current_health == total_health)
-    {
-      /// Health can't be raised if the two healths are equal, so the health raise is set to 0
-      Buff.set_health_r(0);
-      cout << "Potion found! But health is already full... " << '\n';
-    }
-    else
-    {
-      Buff.set_health_r(total_health - current_health);
-      current_health = total_health;
-      cout << "Potion found! Health is increased by " << Buff.get_health_r() << '\n';
-    }
-  }
-}
-
-/// ************************* //
-/// Treasure Member Functions //
-/// ************************* //
-
-/// Treasure Constructors ///
-
-Treasure::Treasure()
-{
-  total_health_raise = 0;
-  health_raise = 0;
-  attack_raise = 0;
-  defense_raise = 0;
-}
-
-/// Treasure Member Functions ///
-
-// No member functions besides the stat setting
-// and stat getting functions at the moment,
-// but some may be made at a future time
-
-/// ************************* //
-/// Monster Member Functions  //
-/// ************************* //
-
-/// Monster Constructor ///
-
-Monster::Monster()
-{
-  attack = 0;
-  defense = 0;
-  current_health = 0;
-  total_health = 0;
-  score_raise = 0;
-  exp_raise = 0;
-}
 
 /// ************************ //
 ///   Function Declarations  //
@@ -366,7 +75,7 @@ void display_board(vector<pair<int,string> > board_to_display, int player_positi
       continue;
     else if((((player_position + 1) % 5) == 0) and (i == player_position + 1))
     {
-      i += 4;
+      i += 3;
       continue;
     }
 
@@ -438,6 +147,7 @@ int rand_num(int num)
   srand(time(NULL));
   return(rand() % num);
 }
+
 /// I don't use this function, instead I execute this code in th gameboard constructor.
 void initialize_vec(vector<int>& event_positions)
 {
@@ -489,9 +199,9 @@ void display_stats(Player& Adventurer)
   cout << Adventurer.get_name() << endl
     << "Floor: " << setw(7) << Adventurer.get_floor() << endl
     << "Level: " << setw(7) << Adventurer.get_level() << endl
-    << "Health: " << setw(6) << Adventurer.get_current_health() << "/" << Adventurer.get_total_health();
+    << "Health: " << setw(6) << current_health << "/" << total_health;
     cout << "   ";
-    display_hp_bar(Adventurer.get_current_health(), Adventurer.get_total_health());
+    display_hp_bar(current_health, total_health);
     cout << endl;
 
     cout << "Attack: " << setw(6) << Adventurer.get_attack() << endl
@@ -500,27 +210,12 @@ void display_stats(Player& Adventurer)
     << "Experience: " << Adventurer.get_current_exp() << "/" << Adventurer.get_total_exp();
 }
 
-void display_stats(Monster& Mob, Enemy monster_type)
+void display_stats(Monster& Mob)
 {
   /// Add another message for all these,
   /// In other words, fix up the
   /// presentation of the combat
-  if(monster_type == BAT)
-  {
-    cout << "Bat";
-  }
-  else if(monster_type == GOBLIN)
-  {
-    cout << "Goblin";
-  }
-  else if(monster_type == SKELETON)
-  {
-    cout << "Skeleton";
-  }
-  else
-  {
-    cout << "Zombie";
-  }
+  cout << Mob.get_name();
   cout << endl;
   cout << "Health: " << setw(6) << Mob.get_current_health() << "/" << Mob.get_total_health();
   cout << "   ";
@@ -604,6 +299,8 @@ Enemy initialize_monster(Monster& Mob, int floor)
     enemy_base_health,
     enemy_base_exp,
     enemy_base_speed;
+  std::string enemy_name;
+
   if(enemy_type == BAT)
   {
     const int BAT_BASE_DEFENSE = 3,
@@ -616,7 +313,7 @@ Enemy initialize_monster(Monster& Mob, int floor)
     enemy_base_health = BAT_BASE_HEALTH;
     enemy_base_exp = BAT_BASE_EXP;
     enemy_base_speed = BAT_BASE_SPEED;
-    cout << "A bat appeared from the darkness!" << endl;
+    enemy_name = "Dildo Bat";
   }
   else if(enemy_type == GOBLIN)
   {
@@ -629,8 +326,8 @@ Enemy initialize_monster(Monster& Mob, int floor)
     enemy_base_defense = GOBLIN_BASE_DEFENSE;
     enemy_base_health = GOBLIN_BASE_HEALTH;
     enemy_base_exp = GOBLIN_BASE_EXP;
-    enemy_base_speed = GOBLIN_BASE_EXP;
-    cout << "A goblin appeared from the darkness!" << endl;
+    enemy_base_speed = GOBLIN_BASE_SPEED;
+    enemy_name = "Goblin";
   }
   else if(enemy_type == SKELETON)
   {
@@ -643,8 +340,8 @@ Enemy initialize_monster(Monster& Mob, int floor)
     enemy_base_defense = SKELETON_BASE_DEFENSE;
     enemy_base_health = SKELETON_BASE_HEALTH;
     enemy_base_exp = SKELETON_BASE_EXP;
-    enemy_base_speed = SKELETON_BASE_EXP;
-    cout << "A skeleton appeared from the darkness!" << endl;
+    enemy_base_speed = SKELETON_BASE_SPEED;
+    enemy_name = "Skeleton";
   }
   else
   {
@@ -658,7 +355,7 @@ Enemy initialize_monster(Monster& Mob, int floor)
     enemy_base_health = ZOMBIE_BASE_HEALTH;
     enemy_base_exp = ZOMBIE_BASE_EXP;
     enemy_base_speed = ZOMBIE_BASE_SPEED;
-    cout << "A zombie appeared from the darkness!" << endl;
+    enemy_name = "Zombie";
   }
   Mob.set_attack(enemy_base_attack+ rand_num(floor));
   Mob.set_defense(enemy_base_defense + rand_num(floor));
@@ -667,6 +364,8 @@ Enemy initialize_monster(Monster& Mob, int floor)
   Mob.set_current_health(enemy_base_health + ex_health);
   Mob.set_total_health(enemy_base_health + ex_health);
   Mob.set_exp_raise(enemy_base_exp + floor/3);
+  Mob.set_name(enemy_name);
+  cout << "A " << enemy_name << " appeared from the darkness!" << endl;
   return enemy_type;
 }
 
@@ -690,7 +389,7 @@ bool combat(Monster& Mob, Player& Adventurer,Enemy enemy_type, int floor)
   else
   {
     cout << "----------" << '\n';
-    display_stats(Mob,enemy_type);
+    display_stats(Mob);
     cout << "----------" << '\n';
     display_stats(Adventurer);
     cout << '\n' << "----------" << '\n';
@@ -701,43 +400,13 @@ bool combat(Monster& Mob, Player& Adventurer,Enemy enemy_type, int floor)
 
     if((Adventurer.get_speed() <= Mob.get_speed()) || (Mob.get_current_health() - mob_damage) > 0)
     {
-      if(enemy_type == BAT)
-      {
-        cout << "The bat did " << player_damage << " damage!" << endl;
-      }
-      else if(enemy_type == GOBLIN)
-      {
-        cout << "The goblin did " << player_damage << " damage!" << endl;
-      }
-      else if(enemy_type == SKELETON)
-      {
-        cout << "The skeleton did " << player_damage << " damage!" << endl;
-      }
-      else
-      {
-        cout << "The zombie did " << player_damage << " damage!" << endl;
-      }
+      cout << "The " << Mob.get_name() << " did " << player_damage << " damage!" << endl;
       Adventurer.set_current_health(Adventurer.get_current_health() - player_damage);
     }
 
     if((Mob.get_speed() <= Adventurer.get_speed()) || (Adventurer.get_current_health() > 0))
     {
-      if(enemy_type == BAT)
-      {
-        cout << "The bat sustained " << mob_damage << " damage!" << endl;
-      }
-      else if(enemy_type == GOBLIN)
-      {
-        cout << "The goblin sustained " << mob_damage << " damage!" << endl;
-      }
-      else if(enemy_type == SKELETON)
-      {
-        cout << "The skeleton sustained " << mob_damage << " damage!" << endl;
-      }
-      else
-      {
-        cout << "The zombie sustained " << mob_damage << " damage!" << endl;
-      }
+      cout << "The " << Mob.get_name() << " sustained " << mob_damage << " damage!" << endl;
       Mob.set_current_health(Mob.get_current_health() - mob_damage);
     }
     cin.get();
@@ -766,14 +435,22 @@ void level_up(Player& Adventurer)
   cout << "**---------**" << endl;
 }
 
-template <typename DataType>
-void check_file(DataType &file_to_check)
+void check_file(ofstream &file_to_check)
 {
   if(file_to_check.fail())
   {
   cout << "Error opening file";
   }
 }
+
+void check_file(ifstream &file_to_check)
+{
+  if(file_to_check.fail())
+  {
+  cout << "Error opening file";
+  }
+}
+
 
 HighScoreEntry * create_linked_list(ifstream &input_file,HighScoreEntry * &head)
 {
@@ -922,7 +599,7 @@ void create_high_score_entry(HighScoreEntry* &head,Player &Adventurer, ifstream 
   input_file.close();
   ofstream output_file;
   output_file.open("highscores.txt",ios::trunc);
-  check_file<ofstream>(output_file);
+  check_file(output_file);
   for(currentnode = head;currentnode != NULL;currentnode = currentnode->next)
   {
     output_file << " " << '\n'
@@ -991,5 +668,3 @@ void reset_player(Player &Adventurer)
   Adventurer.set_current_exp(0);
   Adventurer.set_total_exp(INITIAL_TOTAL_EXP);
 }
-
-#endif

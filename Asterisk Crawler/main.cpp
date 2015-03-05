@@ -6,9 +6,15 @@
 
 using namespace std;
 
-#include <cstdlib>
+#include "unit.h"
+#include "gameboard.h"
+#include "item.h"
+#include "monster.h"
+#include "proto.h"
+#include "player.h"
 
-#include "Functions.h"
+#include <time.h>
+#include <assert.h>
 
 int main()
 {
@@ -83,7 +89,7 @@ int main()
   }while(game_continue);
 
   /// Highscore Creation and Display ///
-  check_file<ifstream>(input_file);
+  check_file(input_file);
   head = create_linked_list(input_file,head);
   if(previous_game_continue != CONTINUE)
   {
