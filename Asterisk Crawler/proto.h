@@ -23,7 +23,7 @@ class Player;
 
 enum TreasureType {ATTACK, DEFENSE, HEALTH, POTION};
 
-enum EventTypes {SPACE, TREASURE, MONSTER, EXIT};
+enum EventTypes {WALL, SPACE, TREASURE, MONSTER, EXIT};
 
 enum Enemy {BAT, ZOMBIE, SKELETON, GOBLIN};
 
@@ -60,7 +60,7 @@ void game_start(Player&);
 
 /// edit
 
-void display_board(vector<pair<int, string> >, int);
+void display_board(Gameboard&, int);
 
 // void display_board(vector<string>,int);
 

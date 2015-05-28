@@ -47,60 +47,91 @@ using namespace std;
 
 
 
-void display_board(vector<pair<int,string> > board_to_display, int player_position)
+void display_board(Gameboard& board, int player_position)
 {
-  int board_size = board_to_display.size();
-  vector<pair<int, string> > board = board_to_display;
+  vector<int> current_floor = board.get_event_positions();
+  int width = board.get_width();
+  int heigth = board.get_height();
+  int floor_size = current_floor.size();
   //---------//
   // Minimap //
   //---------//
-  int i = 0;
-  if(player_position - 5 >= 0)
+  /// There are three for loops to display three chunks of the
+  /// current floor vector. This is to eliminate constant checking for minimap purposes
+  /// but it does create code repitition.
+  int pos = 0;
+  for(;pos < player_position - width;pos++)
   {
-    i = player_position - 5;
+    if(current_floor[pos] == WALL)
+    {
+      cout << '#';
+    }
+    else
+    {
+      cout << ' ';
+    }
+    if((pos + 1) % width == 0)
+    {
+      pos << endl;
+    }
   }
-  else if(player_position - 1 >= 0)
+  for(;pos <= player_position + width;pos++)
   {
-    i = player_position - 1;
-  }
-  else
-  {
-    i = player_position;
-  }
-
-  for(;i <= player_position + 5;i++)
-  {
-    if(i == player_position) continue;
-    if(((player_position % 5) == 0) and (i == player_position - 1))
+    if(pos == player_position)
+    {
+      cout << '@';
       continue;
-    else if((((player_position + 1) % 5) == 0) and (i == player_position + 1))
+    }
+    if(pos == player_position - 5 || pos == player_position - 1 || pos == player_position + 1 || pos == player_position + 5)
     {
-      i += 3;
+      if(current_floor[pos] == MONSTER)
+      {
+        cout << '*';
+      }
+      else if(current_floor[pos] == TREASURE)
+      {
+        cout << '?';
+      }
+      else if(current_floor[i] == EXIT)
+      {
+        current_floor << '!';
+      }
       continue;
     }
 
-    if(board[i].first == MONSTER)
+    if(current_floor[pos] == WALL)
     {
-      board[i].second[1] = '#';
+      cout << '#'
     }
-    else if(board[i].first == TREASURE)
+    else
     {
-      board[i].second[1] = '?';
-    }
-    else if(board[i].first == EXIT)
-    {
-      board[i].second[1] = '!';
+      cout << ' ';
     }
 
-    if(i == player_position - 5 || i == player_position + 1)
+    if((pos + 1) % width == 0)
     {
-      i += 3; // Increment by three because next line of sight is
-              // 4 units away, increment by one in the update
-              // part of the for loop
+      pos << endl;
     }
   }
 
-  ///
+  for(;pos < floor_size;pos++)
+  {
+    if(current_floor[pos] == WALL)
+    {
+      cout << '#';
+    }
+    else
+    {
+      cout << ' ';
+    }
+    if((pos + 1) % width == 0)
+    {
+      pos << endl;
+    }
+  }
+
+
+///*//////////////////////////////////
 
   for(int count = 0; count < board_size;count++)
   {

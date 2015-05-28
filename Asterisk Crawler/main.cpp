@@ -13,6 +13,8 @@ using namespace std;
 #include "proto.h"
 #include "player.h"
 
+#include "DungeonGenerator.h"
+
 #include <time.h>
 #include <assert.h>
 

@@ -10,9 +10,9 @@
 
 #define INITIAL_GAMEBOARD_LENGTH 5
 #define INITIAL_GAMEBOARD_SIZE 25
-#define INITIAL_TREASURES 5
-#define INITIAL_SPACES 10
-#define INITIAL_MONSTERS 8
+#define INITIAL_TREASURES 10
+#define INITIAL_SPACES .73
+#define INITIAL_MONSTERS .17
 
 ///*******************///
 ///    Dependencies   ///
@@ -43,40 +43,41 @@ using namespace std;
 
 // Gameboard Constructors //
 
-Gameboard::Gameboard()
+int Gameboard::count_spaces()
 {
-  num_treasures = INITIAL_TREASURES;
-  num_spaces = INITIAL_SPACES;
-  num_monsters = INITIAL_MONSTERS;
-  board_layout = "|*";
-  /// Combine these two edit
+    int spaces = 0;
+    for(int i = 0;i < event_positions.size();i++)
+    {
+        if(event_positions[i] == 1)
+        {
+            spaces++;
+        }
+    }
+    return(spaces);
+}
 
-  event_positions.resize(INITIAL_GAMEBOARD_SIZE);
+Gameboard::Gameboard(vector<int>& dungeon)
+{
+  int spaces = count_spaces(dungeon);
+  spaces = spaces - 2; // To account for the exit and entrance
 
-  int ep_length = event_positions.size();
-  event_positions[0].first = INITIAL_GAMEBOARD_LENGTH;   /// What am I doing here?
-  event_positions[0].second = board_layout;
-  for(int count = 1;count < ep_length;count++)
+  num_treasures = spaces / INITIAL_TREASURES;
+  num_spaces = spaces * INITIAL_SPACES;
+  num_monsters = spaces * INITIAL_MONSTERS;
+
+  for(int count = 0;count < spaces;count++)
   {
-  	if(count < INITIAL_GAMEBOARD_SIZE - 14)
+    if(count < num_treasures)
     {
-      event_positions[count].first = SPACE;
-      event_positions[count].second = board_layout;
+      event_positions[count] = TREASURE;
     }
-    else if(count < INITIAL_GAMEBOARD_SIZE - 6)
+    else if(count < num_monsters)
     {
-      event_positions[count].first = MONSTER;
-      event_positions[count].second = board_layout;
-    }
-    else if(count < INITIAL_GAMEBOARD_SIZE - 1)
-    {
-      event_positions[count].first = TREASURE;
-    	event_positions[count].second = board_layout;
+      event_positions[count] = MONSTER;
     }
   }
 
-  event_positions[ep_length-1].first = EXIT;
-  event_positions[ep_length-1].second = board_layout;
+  dungeon[spaces-1] = EXIT;
   cpy_event_positions = event_positions;
   /*
   gameboard.resize(INITIAL_GAMEBOARD_SIZE);
@@ -134,7 +135,7 @@ string Gameboard::get_layout() const
   return board_layout;
 }
 
-vector<pair<int,string> > Gameboard::get_event_positions() const
+vector<int> Gameboard::get_event_positions() const
 {
   return event_positions;
 }
@@ -144,22 +145,21 @@ void Gameboard::set_layout(string layout)
   board_layout = layout;
 }
 
-void Gameboard::set_event_positions(vector<pair<int,string> > &positions)
+void Gameboard::set_event_positions(vector<int> &positions)
 {
   event_positions = positions;
 }
 
 void Gameboard::remove_event_position(int player_position)
 {
-	event_positions[player_position].first = SPACE;
-  event_positions[player_position].second = board_layout;
+	event_positions[player_position] = SPACE;
 }
 
 void Gameboard::new_level_gameboard()
 {
   event_positions = cpy_event_positions;
-  vector<pair<int,string> > positions = event_positions;
-  random_shuffle(positions.begin(),positions.end());
+  vector<int> positions = event_positions;
+  random_shuffle(positions.begin(),positions.end());  /// change random shuffle
   event_positions = positions;
 }
 
