@@ -21,8 +21,31 @@ using namespace std;
 int main()
 {
   /// Object Declarations ///
-  Player Adventurer;
-  Gameboard Board;
+  DungeonGenerator LevelGenerator(20, 25);
+  LevelGenerator.generate_dungeon(15, 12, 3);
+  vector<int> new_dungeon = LevelGenerator.get_dungeon();
+//-----------------------//
+  for(int pos = 0;pos < new_dungeon.size();pos++)
+  {
+    if(new_dungeon[pos] == WALL)
+    {
+      cout << '#';
+    }
+    else
+    {
+      cout << ' ';
+    }
+    if((pos + 1) % LevelGenerator.get_width() == 0)
+    {
+      cout << endl;
+    }
+  }
+//-------------------------//
+  Player Adventurer(new_dungeon.size());
+  Gameboard Board(new_dungeon);
+  Board.set_height(LevelGenerator.get_height());
+  Board.set_width(LevelGenerator.get_width());
+  Board.set_seed(LevelGenerator.get_mapSeed());
   Treasure Buff;
   Monster Mob;
   /// Treasure variable to hold the type of treasure ///
@@ -35,23 +58,23 @@ int main()
   input_file.open("highscores.txt");
   HighScoreEntry * head = NULL;
   game_start(Adventurer);
-  Board.new_level_gameboard();
+  //Board.new_level_gameboard();
 
   do
   {
   while(player_alive)
   {
-    display_board(Board.get_event_positions(),Adventurer.get_position());
+    display_board(Board.get_event_positions(),Board.get_width(),Adventurer.get_position());
     display_stats(Adventurer);
     movement(Adventurer);
     int player_position = Adventurer.get_position();
-    if(Board.get_event_positions()[player_position].first == TREASURE)
+    if(Board.get_event_positions()[player_position] == TREASURE)
     {
       temp_treasure = initialize_treasure(Buff);
       Adventurer.stat_raise(Buff,temp_treasure);
       Board.remove_event_position(player_position);
     }
-    else if(Board.get_event_positions()[player_position].first == MONSTER)
+    else if(Board.get_event_positions()[player_position] == MONSTER)
     {
       enemy_type = initialize_monster(Mob, Adventurer.get_floor());
       player_alive = combat(Mob, Adventurer, enemy_type, Adventurer.get_floor());
@@ -66,7 +89,7 @@ int main()
       }
     }
 
-    else if(Board.get_event_positions()[player_position].first == EXIT)
+    else if(Board.get_event_positions()[player_position] == EXIT)
     {
       Adventurer.set_floor(Adventurer.get_floor() + 1);
       Board.new_level_gameboard();

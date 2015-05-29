@@ -43,22 +43,10 @@ using namespace std;
 
 // Gameboard Constructors //
 
-int Gameboard::count_spaces()
-{
-    int spaces = 0;
-    for(int i = 0;i < event_positions.size();i++)
-    {
-        if(event_positions[i] == 1)
-        {
-            spaces++;
-        }
-    }
-    return(spaces);
-}
-
 Gameboard::Gameboard(vector<int>& dungeon)
 {
-  int spaces = count_spaces(dungeon);
+  event_positions = dungeon;
+  int spaces = count_spaces();
   spaces = spaces - 2; // To account for the exit and entrance
 
   num_treasures = spaces / INITIAL_TREASURES;
@@ -79,70 +67,27 @@ Gameboard::Gameboard(vector<int>& dungeon)
 
   dungeon[spaces-1] = EXIT;
   cpy_event_positions = event_positions;
-  /*
-  gameboard.resize(INITIAL_GAMEBOARD_SIZE);
-  event_positions.resize(INITIAL_GAMEBOARD_SIZE);
-  for(int count = 0;count < gameboard.size();count++)
-  {
-    gameboard[count] = board_layout;
-  }
-  int ep_length = event_positions.size();
-  event_positions[0] = INITIAL_GAMEBOARD_LENGTH;
-  for(int count = 1;count < ep_length;count++)
-  {
-  	if(count < INITIAL_GAMEBOARD_SIZE - 14)
-    {
-      event_positions[count] = SPACE;
-    }
-    else if(count < INITIAL_GAMEBOARD_SIZE - 6)
-    {
-      event_positions[count] = MONSTER;
-    }
-    else if(count < INITIAL_GAMEBOARD_SIZE - 1)
-    {
-    	event_positions[count] = TREASURE;
-    }
-  }
-
-  // Initializing the treasure type vector
-  event_positions[ep_length-1] = EXIT;
-  cpy_event_positions = event_positions;
-  */
-  ///
 }
 
-/*
-Gameboard::Gameboard(int treasures, int spaces, int monsters, string layout, int gameboard_size)
+int Gameboard::count_spaces()
 {
-  num_treasures = treasures;
-  num_spaces = spaces;
-  num_monsters = monsters;
-  board_layout = layout;
-  gameboard.resize(gameboard_size);
-  // This would be used for a more dynamic gameboard and more levels.
-  for(int count = 0;count < gameboard_size;count++)
-  {
-    gameboard[count] = board_layout;
-  }
-  gameboard[0][1] = '@';
+    int spaces = 0;
+    for(int i = 0;i < event_positions.size();i++)
+    {
+        if(event_positions[i] == 1)
+        {
+            spaces++;
+        }
+    }
+    return(spaces);
 }
-*/
 
 // Gameboard Member Functions //
 
-string Gameboard::get_layout() const
-{
-  return board_layout;
-}
 
 vector<int> Gameboard::get_event_positions() const
 {
   return event_positions;
-}
-
-void Gameboard::set_layout(string layout)
-{
-  board_layout = layout;
 }
 
 void Gameboard::set_event_positions(vector<int> &positions)

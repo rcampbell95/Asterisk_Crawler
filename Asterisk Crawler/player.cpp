@@ -30,7 +30,7 @@
 
 /// Player Constructors ///
 
-Player::Player()
+Player::Player(int floor_size)
 {
   set_attack(PLAYER_BASE_STAT + rand_num(3));
   set_defense(PLAYER_BASE_STAT + rand_num(4));
@@ -40,7 +40,7 @@ Player::Player()
   set_total_health(PLAYER_BASE_STAT + ex_health);
   set_current_exp(0);
   set_total_exp(INITIAL_TOTAL_EXP);
-  set_position(0);
+  position = floor_size / 2;
   level = 1;
   floor = 1;
 }

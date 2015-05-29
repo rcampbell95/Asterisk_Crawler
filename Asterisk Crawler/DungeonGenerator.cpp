@@ -88,7 +88,7 @@ Seed DungeonGenerator::generate_room(int passes)
 	return roomSeed;
 }
 
-void DungeonGenerator::generate_dungeon(int passes,int rooms)
+void DungeonGenerator::generate_dungeon(int passes,int rooms, int smoothing_passes)
 {
 	int roomsSubOne = rooms - 1;
 	Seed seedOne = generate_room(passes);
@@ -98,6 +98,10 @@ void DungeonGenerator::generate_dungeon(int passes,int rooms)
 		connect_rooms(seedOne,seedTwo);
 		seedOne = seedTwo;
 	}
+	for(int j = 0;j < smoothing_passes; j++)
+  {
+    smoothing();
+  }
 }
 
 void DungeonGenerator::connect_rooms(Seed& seedOne,Seed& seedTwo)
@@ -155,12 +159,12 @@ void DungeonGenerator::smoothing()
 	{
 		for(int j = 1;j < adWidth;j++)
 		{
-			neighbors = dungeon[(i-1)*width + j-1] + 
-			dungeon[(i-1)*width + j] + 
-			dungeon[(i-1)*width + j+1] + 
-			dungeon[i*width + j-1] + 
-			dungeon[i*width + j+1] + 
-			dungeon[(i+1)*width + j-1] + 
+			neighbors = dungeon[(i-1)*width + j-1] +
+			dungeon[(i-1)*width + j] +
+			dungeon[(i-1)*width + j+1] +
+			dungeon[i*width + j-1] +
+			dungeon[i*width + j+1] +
+			dungeon[(i+1)*width + j-1] +
 			dungeon[(i+1)*width + j] +
 			dungeon[(i+1)*width + j+1];
 

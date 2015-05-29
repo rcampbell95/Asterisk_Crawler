@@ -60,7 +60,7 @@ void game_start(Player&);
 
 /// edit
 
-void display_board(Gameboard&, int);
+void display_board(vector<int>, int, int);
 
 // void display_board(vector<string>,int);
 

@@ -37,29 +37,16 @@ using namespace std;
 ///   Function Declarations  //
 /// ************************ //
 
-/// void calc_board_perc(Gameboard& Board)
-/// {
-///  event_size = (Board.get_board).size() - 2;
-///
-/// }
-
-/// edit
-
-
-
-void display_board(Gameboard& board, int player_position)
+void display_board(vector<int> current_floor, int width, int player_position)
 {
-  vector<int> current_floor = board.get_event_positions();
-  int width = board.get_width();
-  int heigth = board.get_height();
   int floor_size = current_floor.size();
-  //---------//
-  // Minimap //
-  //---------//
   /// There are three for loops to display three chunks of the
   /// current floor vector. This is to eliminate constant checking for minimap purposes
   /// but it does create code repitition.
   int pos = 0;
+  cout << pos << ":" << player_position - width;
+  if(pos < player_position - width) cout << "true";
+  else cout << "false";
   for(;pos < player_position - width;pos++)
   {
     if(current_floor[pos] == WALL)
@@ -72,9 +59,13 @@ void display_board(Gameboard& board, int player_position)
     }
     if((pos + 1) % width == 0)
     {
-      pos << endl;
+      cout << endl;
     }
   }
+
+  //---------//
+  // Minimap //
+  //---------//
   for(;pos <= player_position + width;pos++)
   {
     if(pos == player_position)
@@ -92,16 +83,16 @@ void display_board(Gameboard& board, int player_position)
       {
         cout << '?';
       }
-      else if(current_floor[i] == EXIT)
+      else if(current_floor[pos] == EXIT)
       {
-        current_floor << '!';
+        cout << '!';
       }
       continue;
     }
 
     if(current_floor[pos] == WALL)
     {
-      cout << '#'
+      cout << '#';
     }
     else
     {
@@ -110,7 +101,7 @@ void display_board(Gameboard& board, int player_position)
 
     if((pos + 1) % width == 0)
     {
-      pos << endl;
+      cout << endl;
     }
   }
 
@@ -126,23 +117,6 @@ void display_board(Gameboard& board, int player_position)
     }
     if((pos + 1) % width == 0)
     {
-      pos << endl;
-    }
-  }
-
-
-///*//////////////////////////////////
-
-  for(int count = 0; count < board_size;count++)
-  {
-    if(count == player_position)
-    {
-      board[count].second[1] = '@';
-    }
-    cout << board[count].second;
-    if((count + 1) % INITIAL_GAMEBOARD_LENGTH == 0)
-    {
-      cout << '|';
       cout << endl;
     }
   }
@@ -183,8 +157,6 @@ int rand_num(int num)
 void initialize_vec(vector<int>& event_positions)
 {
   int ep_length = event_positions.size();
-  /// Would be simple to make thse harcoded numbers percents instead of harcoding them. I'll try this just to hurry the
-  /// alpha version then see how I can optimize it.
   for(int count = 1;count < ep_length;count++)
   {
   	if(count < 11)

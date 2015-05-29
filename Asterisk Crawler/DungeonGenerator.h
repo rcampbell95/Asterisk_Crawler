@@ -14,6 +14,7 @@ private:
 	int height;
 	int width;
 	int mapSeed;
+	void smoothing();
 public:
 	DungeonGenerator(int startWidth=10, int startHeight=10,int mSeed=0);
 	std::vector<int> get_dungeon() {return dungeon;}
@@ -25,9 +26,8 @@ public:
 	void set_width(int new_width);
 	void set_mapSeed(int new_mapSeed);
 	Seed generate_room(int passes);
-	void generate_dungeon(int passes,int rooms);
+	void generate_dungeon(int passes,int rooms, int smoothing_passes);
 	void connect_rooms(Seed& seedOne,Seed& seedTwo);
-	void smoothing();
 };
 
 #endif

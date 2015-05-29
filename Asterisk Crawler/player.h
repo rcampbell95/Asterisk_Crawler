@@ -15,7 +15,7 @@ private:
   int level;
   int floor;
 public:
-  Player();
+  Player(int floor_size);
   int get_position() const       {return position;}
   int get_current_exp() const    {return current_exp;}
   int get_total_exp() const      {return total_exp;}

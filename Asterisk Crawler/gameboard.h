@@ -32,7 +32,6 @@ private:
   vector<int> cpy_event_positions;
   int count_spaces();
 public:
-  Gameboard(int, int, int, string,int);
   Gameboard(vector<int>&);
 
   int get_height() const {return height;}
@@ -41,14 +40,12 @@ public:
   int p_spaces() const {return num_spaces;}
   int n_monsters() const {return num_monsters;}
   int p_treasures() const {return num_treasures;}
-  string get_layout() const;
   vector<int> get_event_positions() const;
   vector<int> get_cpy_event_positions() const;
 
   void set_height(int new_height) {height = new_height;}
   void set_width(int new_width) {width = new_width;}
   void set_seed(int new_seed) {level_seed = new_seed;}
-  void set_layout(string);
   void set_p_treasures(int num) {num_treasures = num;}
   void set_p_spaces(int num) {num_spaces = num;}
   void set_n_monsters(int);
