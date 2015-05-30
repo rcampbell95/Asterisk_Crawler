@@ -40,7 +40,7 @@ Player::Player(int floor_size)
   set_total_health(PLAYER_BASE_STAT + ex_health);
   set_current_exp(0);
   set_total_exp(INITIAL_TOTAL_EXP);
-  position = floor_size / 2;
+  position = 0;
   level = 1;
   floor = 1;
 }

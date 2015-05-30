@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <fstream>
 #include <iomanip>
+#include <cassert>
 
 #include "unit.h"
 #include "item.h"
@@ -43,13 +44,9 @@ void display_board(vector<int> current_floor, int width, int player_position)
   /// There are three for loops to display three chunks of the
   /// current floor vector. This is to eliminate constant checking for minimap purposes
   /// but it does create code repitition.
-  int pos = 0;
-  cout << pos << ":" << player_position - width;
-  if(pos < player_position - width) cout << "true";
-  else cout << "false";
-  for(;pos < player_position - width;pos++)
+  for(int i = 0;i < player_position - width;i++)
   {
-    if(current_floor[pos] == WALL)
+    if(current_floor[i] == WALL)
     {
       cout << '#';
     }
@@ -57,40 +54,45 @@ void display_board(vector<int> current_floor, int width, int player_position)
     {
       cout << ' ';
     }
-    if((pos + 1) % width == 0)
+    if((i + 1) % width == 0)
     {
       cout << endl;
     }
   }
-
   //---------//
   // Minimap //
   //---------//
-  for(;pos <= player_position + width;pos++)
+
+  for(int j = player_position - width;j <= player_position + width;j++)
   {
-    if(pos == player_position)
+    if(j == player_position)
     {
       cout << '@';
       continue;
     }
-    if(pos == player_position - 5 || pos == player_position - 1 || pos == player_position + 1 || pos == player_position + 5)
+    if(j == player_position - width || j == player_position - 1 || j == player_position + 1 || j == player_position + width)
     {
-      if(current_floor[pos] == MONSTER)
+      if(current_floor[j] == MONSTER)
       {
         cout << '*';
       }
-      else if(current_floor[pos] == TREASURE)
+      else if(current_floor[j] == TREASURE)
       {
         cout << '?';
       }
-      else if(current_floor[pos] == EXIT)
+      else if(current_floor[j] == EXIT)
       {
         cout << '!';
       }
+      else if(current_floor[j] == WALL)
+      {
+        cout << "#";
+      }
+      else cout << ' ';
       continue;
     }
 
-    if(current_floor[pos] == WALL)
+    if(current_floor[j] == WALL)
     {
       cout << '#';
     }
@@ -99,15 +101,15 @@ void display_board(vector<int> current_floor, int width, int player_position)
       cout << ' ';
     }
 
-    if((pos + 1) % width == 0)
+    if((j + 1) % width == 0)
     {
       cout << endl;
     }
   }
 
-  for(;pos < floor_size;pos++)
+  for(int k = player_position + width + 1;k < floor_size;k++)
   {
-    if(current_floor[pos] == WALL)
+    if(current_floor[k] == WALL)
     {
       cout << '#';
     }
@@ -115,7 +117,7 @@ void display_board(vector<int> current_floor, int width, int player_position)
     {
       cout << ' ';
     }
-    if((pos + 1) % width == 0)
+    if((k + 1) % width == 0)
     {
       cout << endl;
     }
@@ -229,25 +231,35 @@ void display_stats(Monster& Mob)
     << "Speed: " << setw(7) << Mob.get_speed() << endl;
 }
 
+int find_position(Player& Adventurer, vector<int> event_positions)
+{
+  for(int i = 0; i < event_positions.size();i++)
+  {
+    if(event_positions[i] == SPACE)
+    {
+      return(i);
+    }
+  }
+}
 
-void movement(Player& Adventurer)
+void movement(Player& Adventurer,int width, vector<int> event_positions)
 {
   char player_move;
   cout << "\n>> ";
   cin.get(player_move);
   /// Input validation for correct character.
-  while((player_move != 'w' && player_move != 's' && player_move != 'a' && player_move != 'd') || check_move(Adventurer.get_position(), player_move))
+  while((player_move != 'w' && player_move != 's' && player_move != 'a' && player_move != 'd') || check_move(Adventurer.get_position(), width, player_move, event_positions))
   {
     cout << "\n>> ";
     cin.get(player_move);
   }
   if(player_move == 'w')
   {
-    Adventurer.set_position(Adventurer.get_position()-5);
+    Adventurer.set_position(Adventurer.get_position()-width);
   }
   else if(player_move == 's')
   {
-    Adventurer.set_position(Adventurer.get_position()+5);
+    Adventurer.set_position(Adventurer.get_position()+width);
   }
   else if(player_move == 'd')
   {
@@ -261,10 +273,17 @@ void movement(Player& Adventurer)
   cin.ignore();
 }
 
-bool check_move(int player_position, char player_move)
+bool check_move(int player_position, int width, char player_move, vector<int>& event_positions)
 {
-  return((player_position < 5 && player_move == 'w') || (player_position == 0 && player_move == 'a') ||
-       (player_position > 19 && player_move == 's') || (player_position == 24 && player_move == 'd'));
+  bool up_collide = event_positions[player_position - width] == WALL && player_move == 'w';
+  if(up_collide) cout << "up_collide is true";
+  bool left_collide = event_positions[player_position - 1] == WALL && player_move == 'a';
+  if(left_collide) cout << "left_collide is true";
+  bool down_collide = event_positions[player_position + width] == WALL && player_move == 's';
+  if(down_collide) cout << "down_collide is true";
+  bool right_collide = event_positions[player_position + 1] == WALL && player_move == 'd';
+  if(right_collide) cout << "right_collide is true";
+  return(up_collide || left_collide || down_collide || right_collide);
 }
 
 TreasureType initialize_treasure(Treasure& Buff)

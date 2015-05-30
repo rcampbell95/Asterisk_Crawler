@@ -96,7 +96,7 @@
 	<string>
 	<vector>
 
-1432848580 source:c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\main.cpp
+1432964178 source:c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\main.cpp
 	<iostream>
 	<vector>
 	<time.h>
@@ -129,12 +129,12 @@
 	<vector>
 	<utility>
 
-1432840440 source:c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\item.cpp
+1432929014 source:c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\item.cpp
 	"item.h"
 
-1432840440 c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\item.h
+1432929014 c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\item.h
 
-1432848482 source:c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\gameboard.cpp
+1432955685 source:c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\gameboard.cpp
 	<iostream>
 	<vector>
 	<string>
@@ -150,26 +150,26 @@
 	"proto.h"
 	"player.h"
 
-1432848502 c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\gameboard.h
+1432934726 c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\gameboard.h
 	<utility>
 
-1432840441 c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\unit.h
+1432929014 c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\unit.h
 
-1432840440 c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\monster.h
+1432929014 c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\monster.h
 
-1432845450 c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\proto.h
+1432956582 c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\proto.h
 	<iostream>
 	<vector>
 	<fstream>
 
-1432847488 c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\player.h
+1432929014 c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\player.h
 
-1432840440 source:c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\monster.cpp
+1432929014 source:c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\monster.cpp
 	<string>
 	"unit.h"
 	"monster.h"
 
-1432847871 source:c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\player.cpp
+1432956250 source:c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\player.cpp
 	<string>
 	"unit.h"
 	"item.h"
@@ -177,7 +177,7 @@
 	"proto.h"
 	"player.h"
 
-1432848228 source:c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\proto.cpp
+1432969765 source:c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\proto.cpp
 	<iostream>
 	<vector>
 	<string>
@@ -185,6 +185,7 @@
 	<algorithm>
 	<fstream>
 	<iomanip>
+	<cassert>
 	"unit.h"
 	"item.h"
 	"monster.h"
@@ -268,11 +269,11 @@
 	"proto.h"
 	"player.h"
 
-1432844378 source:c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\dungeongenerator.cpp
+1432929014 source:c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\dungeongenerator.cpp
 	<vector>
 	<cstdlib>
 	<time.h>
 	"DungeonGenerator.h"
 
-1432844580 c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\dungeongenerator.h
+1432929014 c:\users\karin\documents\github\dungeon_crawler\asterisk crawler\dungeongenerator.h
 

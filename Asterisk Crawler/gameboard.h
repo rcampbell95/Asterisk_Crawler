@@ -29,10 +29,10 @@ private:
   int num_spaces;
   int num_monsters;
   vector<int> event_positions;
-  vector<int> cpy_event_positions;
+  vector<int> events;
   int count_spaces();
 public:
-  Gameboard(vector<int>&);
+  Gameboard();
 
   int get_height() const {return height;}
   int get_width() const {return width;}
@@ -41,7 +41,7 @@ public:
   int n_monsters() const {return num_monsters;}
   int p_treasures() const {return num_treasures;}
   vector<int> get_event_positions() const;
-  vector<int> get_cpy_event_positions() const;
+  vector<int> get_events() const;
 
   void set_height(int new_height) {height = new_height;}
   void set_width(int new_width) {width = new_width;}
@@ -50,10 +50,10 @@ public:
   void set_p_spaces(int num) {num_spaces = num;}
   void set_n_monsters(int);
   void set_event_positions(vector<int>&);
-  void set_cpy_event_positions(vector<int>&);
+  void set_events(vector<int>&);
 
   void remove_event_position(int);
-  void new_level_gameboard();
+  void new_level_gameboard(vector<int>&);
   // You can make the gameboard a constant for now and later implement the function correctly.
   //void create_gameboard(Gameboard&);
 };

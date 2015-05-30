@@ -43,30 +43,11 @@ using namespace std;
 
 // Gameboard Constructors //
 
-Gameboard::Gameboard(vector<int>& dungeon)
+Gameboard::Gameboard()
 {
-  event_positions = dungeon;
-  int spaces = count_spaces();
-  spaces = spaces - 2; // To account for the exit and entrance
-
-  num_treasures = spaces / INITIAL_TREASURES;
-  num_spaces = spaces * INITIAL_SPACES;
-  num_monsters = spaces * INITIAL_MONSTERS;
-
-  for(int count = 0;count < spaces;count++)
-  {
-    if(count < num_treasures)
-    {
-      event_positions[count] = TREASURE;
-    }
-    else if(count < num_monsters)
-    {
-      event_positions[count] = MONSTER;
-    }
-  }
-
-  dungeon[spaces-1] = EXIT;
-  cpy_event_positions = event_positions;
+  width = 10;
+  height = 10;
+  level_seed = 0;
 }
 
 int Gameboard::count_spaces()
@@ -100,12 +81,44 @@ void Gameboard::remove_event_position(int player_position)
 	event_positions[player_position] = SPACE;
 }
 
-void Gameboard::new_level_gameboard()
+void Gameboard::new_level_gameboard(vector<int>& dungeon)
 {
-  event_positions = cpy_event_positions;
-  vector<int> positions = event_positions;
+  event_positions = dungeon;
+  int spaces = count_spaces();
+  events.resize(spaces);
+
+  num_treasures = spaces / INITIAL_TREASURES;
+  num_spaces = spaces * INITIAL_SPACES;
+  num_monsters = spaces * INITIAL_MONSTERS;
+
+  for(int count = 0;count < spaces;count++)
+  {
+    if(count < num_treasures)
+    {
+      events[count] = TREASURE;
+    }
+    else if(count < num_monsters + num_treasures)
+    {
+      events[count] = MONSTER;
+    }
+    else
+    {
+      events[count] = SPACE;
+    }
+  }
+
+  events[spaces-1] = EXIT;
+
+  vector<int> positions = events;
   random_shuffle(positions.begin(),positions.end());  /// change random shuffle
-  event_positions = positions;
+  int pos = 0;
+  for(int i = 0; i < event_positions.size();i++)
+  {
+    if(event_positions[i] == SPACE)
+    {
+      event_positions[i] = positions[pos++];
+    }
+  }
 }
 
 /// edit

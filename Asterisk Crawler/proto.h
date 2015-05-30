@@ -72,9 +72,11 @@ void display_stats(Player&);
 
 void display_stats(Monster&);
 
-void movement(Player&);
+int find_position(Player&, vector<int>);
 
-bool check_move(int,char);
+void movement(Player&, int , vector<int>);
+
+bool check_move(int,int,char,vector<int>&);
 
 TreasureType initialize_treasure(Treasure&);
 

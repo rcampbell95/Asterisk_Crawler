@@ -21,13 +21,13 @@ using namespace std;
 int main()
 {
   /// Object Declarations ///
-  DungeonGenerator LevelGenerator(20, 25);
+  DungeonGenerator LevelGenerator(20, 15);
   LevelGenerator.generate_dungeon(15, 12, 3);
   vector<int> new_dungeon = LevelGenerator.get_dungeon();
-//-----------------------//
-  for(int pos = 0;pos < new_dungeon.size();pos++)
+  //---------------------\\/
+  for(int i = 0; i < new_dungeon.size(); i++)
   {
-    if(new_dungeon[pos] == WALL)
+    if(new_dungeon[i] == WALL)
     {
       cout << '#';
     }
@@ -35,14 +35,14 @@ int main()
     {
       cout << ' ';
     }
-    if((pos + 1) % LevelGenerator.get_width() == 0)
+    if(((i + 1) % LevelGenerator.get_width()) == 0)
     {
       cout << endl;
     }
   }
-//-------------------------//
+
   Player Adventurer(new_dungeon.size());
-  Gameboard Board(new_dungeon);
+  Gameboard Board;
   Board.set_height(LevelGenerator.get_height());
   Board.set_width(LevelGenerator.get_width());
   Board.set_seed(LevelGenerator.get_mapSeed());
@@ -57,8 +57,10 @@ int main()
   ifstream input_file;
   input_file.open("highscores.txt");
   HighScoreEntry * head = NULL;
+
   game_start(Adventurer);
-  //Board.new_level_gameboard();
+  Board.new_level_gameboard(new_dungeon);
+  Adventurer.set_position(find_position(Adventurer, Board.get_event_positions()));
 
   do
   {
@@ -66,7 +68,7 @@ int main()
   {
     display_board(Board.get_event_positions(),Board.get_width(),Adventurer.get_position());
     display_stats(Adventurer);
-    movement(Adventurer);
+    movement(Adventurer, Board.get_width(), Board.get_event_positions()); /// Won't work. Need to pass vector to index possible places
     int player_position = Adventurer.get_position();
     if(Board.get_event_positions()[player_position] == TREASURE)
     {
@@ -92,7 +94,7 @@ int main()
     else if(Board.get_event_positions()[player_position] == EXIT)
     {
       Adventurer.set_floor(Adventurer.get_floor() + 1);
-      Board.new_level_gameboard();
+      Board.new_level_gameboard(new_dungeon);
       /// You may want to make this part of some game_end function, like highscore, saving, other stuff.
       cout << '\n' << "The exit! Steeling yourself, you ascend the stairs..." << '\n';
     }
