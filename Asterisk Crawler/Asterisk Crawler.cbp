@@ -45,9 +45,6 @@
 		<Unit filename="DungeonGenerator.h" />
 		<Unit filename="gameboard.cpp" />
 		<Unit filename="gameboard.h" />
-		<Unit filename="gui.cpp">
-			<Option target="Debug" />
-		</Unit>
 		<Unit filename="item.cpp" />
 		<Unit filename="item.h" />
 		<Unit filename="main.cpp" />

@@ -10,7 +10,7 @@
 
 #include "DungeonGenerator.h"
 
-DungeonGenerator::DungeonGenerator(int startWidth, int startHeight,int mSeed)
+DungeonGenerator::DungeonGenerator(int mSeed, int new_height, int new_width)
 {
 	mapSeed = mSeed;
 	if(mapSeed == 0)
@@ -18,9 +18,8 @@ DungeonGenerator::DungeonGenerator(int startWidth, int startHeight,int mSeed)
 		mapSeed = time(0);
 	}
 	srand(mapSeed);
-	height = startHeight;
-	width = startWidth;
-
+	height = new_height;
+	width = new_width;
 	dungeon.resize(height * width);
 }
 
