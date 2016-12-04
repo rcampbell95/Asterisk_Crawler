@@ -1,3 +1,25 @@
+//MIT License
+//
+//Copyright (c) 2016 Roberto Campbell
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in all
+//copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+//SOFTWARE.
+
 #include <iostream>
 #include <vector>
 #include <time.h>
@@ -21,28 +43,12 @@ using namespace std;
 int main()
 {
   /// Object Declarations ///
-  DungeonGenerator LevelGenerator(20, 25);
-  LevelGenerator.generate_dungeon(15, 12, 3);
+  DungeonGenerator LevelGenerator(0,10,10);
+  LevelGenerator.generate_dungeon(0, 7, 0);
   vector<int> new_dungeon = LevelGenerator.get_dungeon();
-//-----------------------//
-  for(int pos = 0;pos < new_dungeon.size();pos++)
-  {
-    if(new_dungeon[pos] == WALL)
-    {
-      cout << '#';
-    }
-    else
-    {
-      cout << ' ';
-    }
-    if((pos + 1) % LevelGenerator.get_width() == 0)
-    {
-      cout << endl;
-    }
-  }
-//-------------------------//
+
   Player Adventurer(new_dungeon.size());
-  Gameboard Board(new_dungeon);
+  Gameboard Board;
   Board.set_height(LevelGenerator.get_height());
   Board.set_width(LevelGenerator.get_width());
   Board.set_seed(LevelGenerator.get_mapSeed());
@@ -57,8 +63,10 @@ int main()
   ifstream input_file;
   input_file.open("highscores.txt");
   HighScoreEntry * head = NULL;
+
   game_start(Adventurer);
-  //Board.new_level_gameboard();
+  Board.new_level_gameboard(new_dungeon);
+  Adventurer.set_position(find_position(Adventurer, Board.get_event_positions()));
 
   do
   {
@@ -66,7 +74,7 @@ int main()
   {
     display_board(Board.get_event_positions(),Board.get_width(),Adventurer.get_position());
     display_stats(Adventurer);
-    movement(Adventurer);
+    movement(Adventurer, Board.get_width(), Board.get_event_positions()); /// Won't work. Need to pass vector to index possible places
     int player_position = Adventurer.get_position();
     if(Board.get_event_positions()[player_position] == TREASURE)
     {
@@ -92,7 +100,7 @@ int main()
     else if(Board.get_event_positions()[player_position] == EXIT)
     {
       Adventurer.set_floor(Adventurer.get_floor() + 1);
-      Board.new_level_gameboard();
+      Board.new_level_gameboard(new_dungeon);
       /// You may want to make this part of some game_end function, like highscore, saving, other stuff.
       cout << '\n' << "The exit! Steeling yourself, you ascend the stairs..." << '\n';
     }
