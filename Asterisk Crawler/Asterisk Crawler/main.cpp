@@ -43,8 +43,12 @@ using namespace std;
 int main()
 {
   /// Object Declarations ///
-  DungeonGenerator LevelGenerator(0,10,10);
-  LevelGenerator.generate_dungeon(0, 7, 0);
+  int seed = 0;
+  int height = 20;
+  int width = 20;
+
+  DungeonGenerator LevelGenerator(seed, height, width);
+  LevelGenerator.generate_dungeon(5, 10, 2);
   vector<int> new_dungeon = LevelGenerator.get_dungeon();
 
   Player Adventurer(new_dungeon.size());
