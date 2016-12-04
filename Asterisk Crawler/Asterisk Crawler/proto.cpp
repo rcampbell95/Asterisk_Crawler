@@ -628,7 +628,7 @@ GameState play_again(GameState game_continue)
   cin >> buffer;
   player_choice = atoi(buffer);
   cin.ignore();
-  while(player_choice != 1 and player_choice != 2 and player_choice != 3)
+  while(player_choice != 1 && player_choice != 2 && player_choice != 3)
   {
     cout << '\n' << "You must decide soon!" << '\n';
     cin >> buffer;
